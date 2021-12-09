@@ -1,0 +1,11 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=160AE69F39F5C74A91130DCF5612A07B/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=160AE69F39F5C74A91130DCF5612A07B/AbsolutePath/@EntryValue">O:\GITLABS\Universe.Framework\src\Universe.Framework.Apache-v2.0.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=160AE69F39F5C74A91130DCF5612A07B/RelativePath/@EntryValue">..\Universe.Framework.Apache-v2.0.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F65E47FE321C7E449E503048C729F5B1/AbsolutePath/@EntryValue">O:\GITLABS\Universe.Framework\src\Universe.Framework.LGPLv2.sln.DotSettings</s:String>
+	<s:String x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F65E47FE321C7E449E503048C729F5B1/RelativePath/@EntryValue">..\Universe.Framework.LGPLv2.sln.DotSettings</s:String>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/FileInjectedLayer/=F65E47FE321C7E449E503048C729F5B1/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File160AE69F39F5C74A91130DCF5612A07B/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=File160AE69F39F5C74A91130DCF5612A07B/RelativePriority/@EntryValue">0.03125</s:Double>
+	<s:Boolean x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileF65E47FE321C7E449E503048C729F5B1/@KeyIndexDefined">True</s:Boolean>
+	<s:Double x:Key="/Default/Environment/InjectedLayers/InjectedLayerCustomization/=FileF65E47FE321C7E449E503048C729F5B1/RelativePriority/@EntryValue">0.0625</s:Double></wpf:ResourceDictionary>
