@@ -26,6 +26,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetPackages", "NugetPacka
 		NugetPacks\Universe.Sp.Common.nuspec = NugetPacks\Universe.Sp.Common.nuspec
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Universe.Sp.CQRS", "SharePoint\Universe.Sp.CQRS\Universe.Sp.CQRS.csproj", "{A720DF53-7B99-41EC-BE44-4521C926C83C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Universe.Sp.DataAccess", "SharePoint\Universe.Sp.DataAccess\Universe.Sp.DataAccess.csproj", "{EC4CA3D8-3954-49B4-85E7-65E44A879F22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +62,22 @@ Global
 		{04461815-1999-4128-A7F4-41BE59AF5AA1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04461815-1999-4128-A7F4-41BE59AF5AA1}.Release|x64.ActiveCfg = Release|Any CPU
 		{04461815-1999-4128-A7F4-41BE59AF5AA1}.Release|x64.Build.0 = Release|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Debug|x64.Build.0 = Debug|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Release|x64.ActiveCfg = Release|Any CPU
+		{A720DF53-7B99-41EC-BE44-4521C926C83C}.Release|x64.Build.0 = Release|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +87,8 @@ Global
 		{4473ABC9-C3EA-433B-9857-E2752F74AE58} = {9DC7A2D0-8112-4397-8C1A-7B1CA04F677B}
 		{04461815-1999-4128-A7F4-41BE59AF5AA1} = {C7614B4F-5D9C-4340-B8E6-26643EB5F39F}
 		{89914AB2-5FCF-4362-90BD-CD04F506B962} = {37DB4356-3145-4359-8E85-0E95FC868003}
+		{A720DF53-7B99-41EC-BE44-4521C926C83C} = {C7614B4F-5D9C-4340-B8E6-26643EB5F39F}
+		{EC4CA3D8-3954-49B4-85E7-65E44A879F22} = {C7614B4F-5D9C-4340-B8E6-26643EB5F39F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {383FBA5E-6187-4CDA-9429-A47167EA2820}

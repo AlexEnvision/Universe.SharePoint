@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A720DF53-7B99-41EC-BE44-4521C926C83C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Universe.Sp.CQRS</RootNamespace>
+    <AssemblyName>Universe.Sp.CQRS</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharePoint.15.0.0\lib\Microsoft.SharePoint\Microsoft.SharePoint.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Abstractions, Version=5.11.6.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Unity.Abstractions.5.11.6\lib\net45\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Universe.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=82e27baad031a5f3, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Universe.Helpers.0.9.3.4\lib\net45\AnyCPU\Universe.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Universe.Types, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a5ac5039c528cbcc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Universe.Types.0.9.3.4\lib\net45\AnyCPU\Universe.Types.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dal\CommandQueryBuilder.cs" />
+    <Compile Include="Dal\Commands\Base\BaseCommand.cs" />
+    <Compile Include="Dal\FilterMetaInfo\FilterMetaInfo.cs" />
+    <Compile Include="Dal\FilterMetaInfo\IFilterMetaInfo.cs" />
+    <Compile Include="Dal\Mappings\Extensions\MappingExpressionExtensions.cs" />
+    <Compile Include="Dal\Mappings\FilterMappings\Base\CamlChainElementBaseMapping.cs" />
+    <Compile Include="Dal\Mappings\FilterMappings\SearchFilterAndMapping.cs" />
+    <Compile Include="Dal\Mappings\Framework\AutoMap.cs" />
+    <Compile Include="Dal\Mappings\Framework\IAutoMap.cs" />
+    <Compile Include="Dal\Queries\Base\BaseQuery.cs" />
+    <Compile Include="Dal\Queries\GetSpEntitiesQuery.cs" />
+    <Compile Include="Extensions\FilterExtensions.cs" />
+    <Compile Include="Infrastructure\ISpWebAppPrincipalResolver.cs" />
+    <Compile Include="Infrastructure\ISpWebAppSettings.cs" />
+    <Compile Include="Infrastructure\IUniverseSpScope.cs" />
+    <Compile Include="Infrastructure\UniverseSpScope.cs" />
+    <Compile Include="MapperConfiguration.cs" />
+    <Compile Include="Models\Condition\AndConfiguration.cs" />
+    <Compile Include="Models\Condition\BeetwenConfiguration.cs" />
+    <Compile Include="Models\Condition\ConditionConfiguration.cs" />
+    <Compile Include="Models\Condition\ContainsConfiguration.cs" />
+    <Compile Include="Models\Condition\EqConfiguration.cs" />
+    <Compile Include="Models\Condition\FieldArgumentConfiguration.cs" />
+    <Compile Include="Models\Condition\FieldConfiguration.cs" />
+    <Compile Include="Models\Condition\IArgumentConfiguration.cs" />
+    <Compile Include="Models\Condition\IFieldConfiguration.cs" />
+    <Compile Include="Models\Condition\InConfiguration.cs" />
+    <Compile Include="Models\Condition\IsNotNullConfiguration.cs" />
+    <Compile Include="Models\Condition\IsNullConfiguration.cs" />
+    <Compile Include="Models\Condition\MembershipConfiguration.cs" />
+    <Compile Include="Models\Condition\NeqConfiguration.cs" />
+    <Compile Include="Models\Condition\OrConfiguration.cs" />
+    <Compile Include="Models\Condition\ValueArgumentConfiguration.cs" />
+    <Compile Include="Models\Dto\Base\BaseSpEntityRequest.cs" />
+    <Compile Include="Models\Dto\Base\SpEntityDto.cs" />
+    <Compile Include="Models\Dto\Base\ISpEntityRequest.cs" />
+    <Compile Include="Models\Dto\Base\ISpEntityDto.cs" />
+    <Compile Include="Models\Dto\SpUserDto.cs" />
+    <Compile Include="Models\Filter\CamlChainRule.cs" />
+    <Compile Include="Models\Filter\FieldMapContainer.cs" />
+    <Compile Include="Models\Filter\IFieldMapContainer.cs" />
+    <Compile Include="Models\Page\Paging.cs" />
+    <Compile Include="Models\QueryBuilder.cs" />
+    <Compile Include="Models\RequestedPage.cs" />
+    <Compile Include="Models\Req\GetSpEntitiesReq.cs" />
+    <Compile Include="Models\Sort\ISortDescriptor.cs" />
+    <Compile Include="Models\Sort\SortConfiguration.cs" />
+    <Compile Include="Models\Sort\SortDescriptor.cs" />
+    <Compile Include="Models\Sort\SortDirection.cs" />
+    <Compile Include="Models\Sort\Sorting.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Principal\ISpWebAppIdentity.cs" />
+    <Compile Include="Security\Principal\ISpWebAppPrincipal.cs" />
+    <Compile Include="Security\Principal\SpWebAppIdentity.cs" />
+    <Compile Include="Security\Principal\SpWebAppPrincipal.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dal\Base\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Universe.Sp.Common\Universe.Sp.Common.csproj">
+      <Project>{ede748f9-a905-4a8b-bfc5-1c8d05904b8f}</Project>
+      <Name>Universe.Sp.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Universe.Sp.DataAccess\Universe.Sp.DataAccess.csproj">
+      <Project>{EC4CA3D8-3954-49B4-85E7-65E44A879F22}</Project>
+      <Name>Universe.Sp.DataAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
