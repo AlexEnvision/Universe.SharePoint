@@ -33,16 +33,19 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Microsoft.SharePoint;
+using Newtonsoft.Json;
 
 namespace Universe.Sp.DataAccess.Models
 {
+    using Microsoft.SharePoint;
+
     public class EntitySp : IEntitySp
     {
         public int Id { get; set; }
 
         public virtual string ListUrl => "EntitySpUrl";
 
+        [JsonIgnore]
         public SPListItem ListItem { get; set; }
     }
 }

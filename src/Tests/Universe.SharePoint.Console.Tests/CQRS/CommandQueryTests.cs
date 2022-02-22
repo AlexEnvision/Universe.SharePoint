@@ -1,6 +1,6 @@
 //  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -34,43 +34,104 @@
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
 using System;
-using Universe.Sp.Common.BatchProcess.Entities;
+using Newtonsoft.Json;
+using Universe.Diagnostic;
+using Universe.Framework.ConsoleApp.Tests.CQRS.Base;
+using Universe.Framework.ConsoleApp.Tests.Infrastructure;
 
-namespace Universe.Sp.Common.BatchProcess
+namespace Universe.Framework.ConsoleApp.Tests.CQRS
 {
-    using Diagnostic.Logger;
+    using SharePoint.DataAccess.Test;
+    using SharePoint.DataAccess.Test.Models;
+    using Sp.Common.Caml;
+    using Sp.CQRS.Dal.Commands;
+    using Sp.CQRS.Dal.Queries;
+    using Sp.CQRS.Infrastructure;
+    using Sp.CQRS.Models.Req;
 
     /// <summary>
+    ///     Тест запросов и команд.
     /// <author>Alex Envision</author>
     /// </summary>
-    public class BatchSpProcessResult
+    public class CommandQueryTests : BaseCommandQueryTests
     {
-        public BatchSpCommandResults Results { get; set; }
-        public string ResultsAsText { get; set; }
-
-        public void LogResult(IUniverseLogger log)
+        public CommandQueryTests()
         {
-            foreach (var result in Results)
+            PrepareToStart();
+        }
+
+        private void PrepareToStart()
+        {
+            Console.WriteLine(@"Готовится запуск CommandQueryTests...");
+        }
+
+        public void CreateEntityQueryTest()
+        {
+            var container = UnityConfig.Container;
+
+            var settings = new AppTestSettings();
+
+            var scope = new UniverseSpScope<UniverseSpTestContext>(settings, container);
+
+            using (var runningTimeWatcher = new RunningTimeWatcher())
             {
-                try
+                var req = new TrainsetSp
                 {
-                    if (result.Code == "0")
-                    {
-                        log.Info(
-                            result.ID > 0
-                                ? $"Создан элемент с ID={result.ID}. ID операции {result.AttrID}"
-                                : $"Сохранён элемент. ID операции {result.AttrID}");
-                    }
-                    else
-                    {
-                        throw new Exception(
-                            $"Ошибка cоздания/сохранения элемента c ID={result.ID}. ID операции {result.AttrID}. Текст ошибки {result.ErrorText}");
-                    }
-                }
-                catch (Exception ex)
+                    Name = "Trainset092",
+                    Title = "Trainset092"
+                };
+
+                Console.WriteLine(@"Сохранение данных в SP...");
+                var result = scope.GetCommand<AddSpEntityCommand<TrainsetSp>>().Execute(
+                    req
+                );
+
+                Console.WriteLine($@"Время выполнения запроса: {runningTimeWatcher.TakeRunningTime():G}");
+
+                var resultSfy = JsonConvert.SerializeObject(result, Formatting.Indented);
+                Console.WriteLine($@"Элемент списка {nameof(TrainsetSp)}: {Environment.NewLine}{resultSfy}");
+            }
+        }
+
+        public void ReadEntityQueryTest()
+        {
+            var container = UnityConfig.Container;
+
+            var settings = new AppTestSettings();
+
+            var scope = new UniverseSpScope<UniverseSpTestContext>(settings, container);
+
+            using (var runningTimeWatcher = new RunningTimeWatcher())
+            {
+                var req = new GetSpEntitiesReq
                 {
-                    log.Error(ex, ex.Message);
-                }               
+                    SpQuery = SpQueryExt.ItemsQuery(
+                        where: CamlHelper.GetCamlWhere(
+                            CamlHelper.CamlChain(
+                                CamlHelper.LogicalOperators.OR,
+                                CamlHelper.CamlChain(
+                                    CamlHelper.LogicalOperators.AND,
+                                    CamlHelper.GetEqText(
+                                        "Name",
+                                        "Trainset001")
+                                ))),
+                        viewFields: CamlHelper.BuildFieldsRef(
+                            "ID",
+                            "Title",
+                            "Name"),
+                        rowLimit: 2000
+                    )
+                };
+
+                Console.WriteLine(@"Чтение данных из SP...");
+                var result = scope.GetQuery<GetSpEntitiesQuery<TrainsetSp>>().Execute(
+                    req
+                );
+
+                Console.WriteLine($@"Время выполнения запроса: {runningTimeWatcher.TakeRunningTime():G}");
+
+                var resultSfy = JsonConvert.SerializeObject(result, Formatting.Indented);
+                Console.WriteLine($@"Элемент списка {nameof(TrainsetSp)}: {Environment.NewLine}{resultSfy}");
             }
         }
     }

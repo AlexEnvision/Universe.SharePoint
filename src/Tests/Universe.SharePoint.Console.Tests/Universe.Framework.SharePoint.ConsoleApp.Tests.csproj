@@ -70,6 +70,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharePoint.15.0.0\lib\Microsoft.SharePoint\Microsoft.SharePoint.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -107,20 +110,20 @@
     <Reference Include="Unity.Container, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Unity.5.11.6\lib\net46\Unity.Container.dll</HintPath>
     </Reference>
-    <Reference Include="Universe.CQRS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5f216b6135b1ce45, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Universe.CQRS.0.9.3.2\lib\net45\AnyCPU\Universe.CQRS.dll</HintPath>
-    </Reference>
     <Reference Include="Universe.DataAccess, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9b0bf033480db36c, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Universe.DataAccess.0.9.3.2\lib\net45\AnyCPU\Universe.DataAccess.dll</HintPath>
     </Reference>
+    <Reference Include="Universe.Diagnostic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2e217ca300e69efc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Universe.Diagnostic.0.9.3.4\lib\net45\AnyCPU\Universe.Diagnostic.dll</HintPath>
+    </Reference>
     <Reference Include="Universe.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=82e27baad031a5f3, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Universe.Helpers.0.9.3.2\lib\net45\AnyCPU\Universe.Helpers.dll</HintPath>
+      <HintPath>..\..\packages\Universe.Helpers.0.9.3.4\lib\net45\AnyCPU\Universe.Helpers.dll</HintPath>
     </Reference>
     <Reference Include="Universe.SqlBulkTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7d957dbd545a3257, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Universe.CQRS.0.9.3.2\lib\net45\AnyCPU\Universe.SqlBulkTools.dll</HintPath>
     </Reference>
     <Reference Include="Universe.Types, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a5ac5039c528cbcc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Universe.Types.0.9.3.2\lib\net45\AnyCPU\Universe.Types.dll</HintPath>
+      <HintPath>..\..\packages\Universe.Types.0.9.3.4\lib\net45\AnyCPU\Universe.Types.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +131,13 @@
       <Link>Properties\GeneralAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AppTestSettings.cs" />
+    <Compile Include="CQRS\Base\BaseCommandQueryTests.cs" />
+    <Compile Include="CQRS\CommandQueryTests.cs" />
+    <Compile Include="CQRS\Models\Base\EntityDto.cs" />
+    <Compile Include="CQRS\Models\TrainsetClassDto.cs" />
+    <Compile Include="CQRS\Models\TrainsetDto.cs" />
+    <Compile Include="CQRS\Models\TrainsetItemDto.cs" />
+    <Compile Include="CQRS\Models\TrainsetItemShortDto.cs" />
     <Compile Include="Infrastructure\AppTestPrincipalResolver.cs" />
     <Compile Include="Infrastructure\UnityConfig.cs" />
     <Compile Include="Infrastructure\UnityProfileApp.cs" />
@@ -144,6 +154,23 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharePoint\Universe.Sp.Common\Universe.Sp.Common.csproj">
+      <Project>{ede748f9-a905-4a8b-bfc5-1c8d05904b8f}</Project>
+      <Name>Universe.Sp.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharePoint\Universe.Sp.CQRS\Universe.Sp.CQRS.csproj">
+      <Project>{a720df53-7b99-41ec-be44-4521c926c83c}</Project>
+      <Name>Universe.Sp.CQRS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharePoint\Universe.Sp.DataAccess\Universe.Sp.DataAccess.csproj">
+      <Project>{ec4ca3d8-3954-49b4-85e7-65e44a879f22}</Project>
+      <Name>Universe.Sp.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Universe.SharePoint.DataAccess.Test\Universe.SharePoint.DataAccess.Test.csproj">
+      <Project>{d44c6692-dc12-4c01-ade0-dd76a876378e}</Project>
+      <Name>Universe.SharePoint.DataAccess.Test</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -33,19 +33,16 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Microsoft.SharePoint;
-
-namespace Universe.Sp.DataAccess.Models
+namespace Universe.Sp.CQRS.Dal.Commands.CommandResults
 {
-    using Newtonsoft.Json;
+    using System.Collections.Generic;
+    using Universe.CQRS.Dal.Commands.CommandResults.Base;
 
-    public interface IEntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class UpdateEntitiesResult : BaseCommandResult
     {
-        int Id { get; set; }
-
-        string ListUrl { get; }
-
-        [JsonIgnore]
-        SPListItem ListItem { get; set; }
+        public List<long> Ids { get; set; }
     }
 }

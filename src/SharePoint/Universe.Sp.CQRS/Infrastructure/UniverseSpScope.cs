@@ -41,7 +41,7 @@ using Universe.Sp.DataAccess;
 
 namespace Universe.Sp.CQRS.Infrastructure
 {
-    public class UniverseSpScope<TUniverseSpContext> : IUniverseSpScope, IDisposable where TUniverseSpContext : class, IUniverseSpContext, new()
+    public class UniverseSpScope<TUniverseSpContext> : IUniverseSpScope, IDisposable where TUniverseSpContext : class, IUniverseSpContext
     {
         private readonly ISpWebAppPrincipalResolver _principalResolver;
 

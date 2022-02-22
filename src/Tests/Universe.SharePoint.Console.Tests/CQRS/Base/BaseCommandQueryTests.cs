@@ -1,6 +1,6 @@
-﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
+//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -33,19 +33,33 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Microsoft.SharePoint;
+using System;
 
-namespace Universe.Sp.DataAccess.Models
+namespace Universe.Framework.ConsoleApp.Tests.CQRS.Base
 {
-    using Newtonsoft.Json;
+    using Sp.CQRS;
 
-    public interface IEntitySp
+    /// <summary>
+    ///     Базовый функционал тестов команд и запросов.
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class BaseCommandQueryTests
     {
-        int Id { get; set; }
+        public BaseCommandQueryTests()
+        {
+            Initialize();
+        }
 
-        string ListUrl { get; }
-
-        [JsonIgnore]
-        SPListItem ListItem { get; set; }
+        protected void Initialize()
+        {
+            try
+            {
+                MapperConfiguration.Configure();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }

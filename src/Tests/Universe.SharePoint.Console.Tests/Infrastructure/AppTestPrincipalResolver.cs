@@ -33,17 +33,17 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Universe.CQRS.Infrastructure;
-using Universe.CQRS.Security.Principal;
-
 namespace Universe.Framework.ConsoleApp.Tests.Infrastructure
 {
+    using Sp.CQRS.Infrastructure;
+    using Sp.CQRS.Security.Principal;
+
     /// <summary>
     /// <author>Alex Envision</author>
     /// </summary>
-    public class AppTestPrincipalResolver : IWebAppPrincipalResolver
+    public class AppTestPrincipalResolver : ISpWebAppPrincipalResolver
     {
-        public WebAppPrincipal GetCurrentPrincipal()
+        public ISpWebAppPrincipal GetCurrentPrincipal()
         {
             return null;
         }

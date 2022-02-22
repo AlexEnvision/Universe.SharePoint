@@ -1,6 +1,6 @@
-﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
+//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -33,19 +33,23 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Microsoft.SharePoint;
+using System;
+using System.Collections.Generic;
+using Universe.Framework.ConsoleApp.Tests.CQRS.Models.Base;
 
-namespace Universe.Sp.DataAccess.Models
+namespace Universe.Framework.ConsoleApp.Tests.CQRS.Models
 {
-    using Newtonsoft.Json;
-
-    public interface IEntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class TrainsetClassDto : EntityDto
     {
-        int Id { get; set; }
+        public Guid SessionId { get; set; }
 
-        string ListUrl { get; }
+        public TrainsetDto TrainSet { get; set; }
 
-        [JsonIgnore]
-        SPListItem ListItem { get; set; }
+        public List<TrainsetItemShortDto> Items { get; set; }
+
+        public string ClassName { get; set; }
     }
 }

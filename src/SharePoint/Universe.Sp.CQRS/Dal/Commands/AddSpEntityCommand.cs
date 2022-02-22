@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -33,19 +33,68 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Microsoft.SharePoint;
-
-namespace Universe.Sp.DataAccess.Models
+namespace Universe.Sp.CQRS.Dal.Commands
 {
-    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Base;
+    using CommandResults;
+    using DataAccess.Models;
+    using Extensions;
+    using Infrastructure;
+    using Microsoft.SharePoint;
 
-    public interface IEntitySp
+    /// <summary>
+    ///     Комманда добавления сущности
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class AddSpEntityCommand<TEntitySp> : BaseCommand
+        where TEntitySp : EntitySp, new()
     {
-        int Id { get; set; }
+        protected TEntitySp CreatedEntity { get; set; }
 
-        string ListUrl { get; }
+        public virtual AddEntityResult Execute(TEntitySp entitySp)
+        {
+            if (entitySp == null)
+                throw new ArgumentNullException(nameof(entitySp));
 
-        [JsonIgnore]
-        SPListItem ListItem { get; set; }
+            var setDb = SpCtx.Set<TEntitySp>();
+            entitySp.ListItem = setDb.AddItem();
+
+            var mapper = new SpMapper();
+            mapper.Map(entitySp, entitySp.ListItem);
+
+            entitySp.ListItem.Update();
+            
+            var id = entitySp.ListItem.ID;
+            entitySp.Id = id;
+            CreatedEntity = entitySp;
+
+            return new AddEntityResult
+            {
+                Id = id,
+                IsSuccessful = true
+            };
+        }
+
+        public virtual AddEntityResult Undo()
+        {
+            var createdEntitySp = this.CreatedEntity;
+
+            if (createdEntitySp == null)
+                throw new ArgumentNullException(nameof(createdEntitySp));
+
+            var setDb = SpCtx.Set<TEntitySp>();
+            createdEntitySp.ListItem.Delete();
+
+            var id = createdEntitySp.Id;
+            return new AddEntityResult
+            {
+                Id = id,
+                IsSuccessful = true
+            };
+        }
     }
 }

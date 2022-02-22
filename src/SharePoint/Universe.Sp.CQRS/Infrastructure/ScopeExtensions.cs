@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -33,19 +33,40 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Microsoft.SharePoint;
-
-namespace Universe.Sp.DataAccess.Models
+namespace Universe.Sp.CQRS.Infrastructure
 {
-    using Newtonsoft.Json;
+    using Dal;
+    using Dal.Commands.Base;
+    using Dal.Queries.Base;
+    using DataAccess;
 
-    public interface IEntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public static class ScopeExtensions
     {
-        int Id { get; set; }
+        public static T GetQuery<T>(this IUniverseSpScope scope) where T : BaseQuery, new()
+        {
+            return CommandQueryBuilder.CreateQuery<T>(scope);
+        }
 
-        string ListUrl { get; }
+        public static T GetCommand<T>(this IUniverseSpScope scope) where T : BaseCommand, new()
+        {
+            return CommandQueryBuilder.CreateCommand<T>(scope);
+        }
 
-        [JsonIgnore]
-        SPListItem ListItem { get; set; }
+        public static T CreateCommand<T, TUniverseSpContext>(this UniverseSpScope<TUniverseSpContext> scope)
+            where T : BaseCommand, new()
+            where TUniverseSpContext : UniverseSpContext, new()
+        {
+            return CommandQueryBuilder.CreateCommand<T>(scope);
+        }
+
+        public static T CreateQuery<T, TUniverseSpContext>(this UniverseSpScope<TUniverseSpContext> scope)
+            where T : BaseQuery, new()
+            where TUniverseSpContext : UniverseSpContext, new()
+        {
+            return CommandQueryBuilder.CreateQuery<T>(scope);
+        }
     }
 }

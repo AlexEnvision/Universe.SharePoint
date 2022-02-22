@@ -71,13 +71,13 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Universe.Diagnostic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2e217ca300e69efc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Universe.Diagnostic.0.9.3.2\lib\net45\AnyCPU\Universe.Diagnostic.dll</HintPath>
+      <HintPath>..\..\packages\Universe.Diagnostic.0.9.3.4\lib\net45\AnyCPU\Universe.Diagnostic.dll</HintPath>
     </Reference>
-    <Reference Include="Universe.Helpers">
-      <HintPath>..\..\Tests\Universe.SharePoint.Console.Tests\bin\x64\Release\Universe.Helpers.dll</HintPath>
+    <Reference Include="Universe.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=82e27baad031a5f3, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Universe.Helpers.0.9.3.4\lib\net45\AnyCPU\Universe.Helpers.dll</HintPath>
     </Reference>
     <Reference Include="Universe.Types, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a5ac5039c528cbcc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Universe.Types.0.9.3.2\lib\net45\AnyCPU\Universe.Types.dll</HintPath>
+      <HintPath>..\..\packages\Universe.Types.0.9.3.4\lib\net45\AnyCPU\Universe.Types.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

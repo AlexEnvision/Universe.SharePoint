@@ -67,7 +67,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dal\CommandQueryBuilder.cs" />
+    <Compile Include="Dal\Commands\AddSpEntityCommand.cs" />
     <Compile Include="Dal\Commands\Base\BaseCommand.cs" />
+    <Compile Include="Dal\Commands\CommandResults\AddEntitiesResult.cs" />
+    <Compile Include="Dal\Commands\CommandResults\AddEntityResult.cs" />
+    <Compile Include="Dal\Commands\CommandResults\Base\BaseCommandResult.cs" />
+    <Compile Include="Dal\Commands\CommandResults\DeleteEntitiesResult.cs" />
+    <Compile Include="Dal\Commands\CommandResults\DeleteEntityResult.cs" />
+    <Compile Include="Dal\Commands\CommandResults\UpdateEntitiesResult.cs" />
+    <Compile Include="Dal\Commands\CommandResults\UpdateEntityResult.cs" />
     <Compile Include="Dal\FilterMetaInfo\FilterMetaInfo.cs" />
     <Compile Include="Dal\FilterMetaInfo\IFilterMetaInfo.cs" />
     <Compile Include="Dal\Mappings\Extensions\MappingExpressionExtensions.cs" />
@@ -78,9 +86,12 @@
     <Compile Include="Dal\Queries\Base\BaseQuery.cs" />
     <Compile Include="Dal\Queries\GetSpEntitiesQuery.cs" />
     <Compile Include="Extensions\FilterExtensions.cs" />
+    <Compile Include="Extensions\SpContextExtensions.cs" />
     <Compile Include="Infrastructure\ISpWebAppPrincipalResolver.cs" />
     <Compile Include="Infrastructure\ISpWebAppSettings.cs" />
     <Compile Include="Infrastructure\IUniverseSpScope.cs" />
+    <Compile Include="Infrastructure\ScopeExtensions.cs" />
+    <Compile Include="Infrastructure\SpMapper.cs" />
     <Compile Include="Infrastructure\UniverseSpScope.cs" />
     <Compile Include="MapperConfiguration.cs" />
     <Compile Include="Models\Condition\AndConfiguration.cs" />

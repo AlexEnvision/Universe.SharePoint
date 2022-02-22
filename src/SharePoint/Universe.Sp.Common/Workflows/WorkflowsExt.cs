@@ -39,12 +39,13 @@ using System.Linq;
 using System.Xml;
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.Workflow;
-using Universe.Diagnostic;
 using Universe.Sp.Common.Workflows.Entities;
 using Universe.Sp.Common.Workflows.Entities.Result;
 
 namespace Universe.Sp.Common.Workflows
 {
+    using Diagnostic.Logger;
+
     /// <summary>
     ///     Расширения для работы с рабочими процессами.
     ///     Extension workflow.
@@ -112,7 +113,7 @@ namespace Universe.Sp.Common.Workflows
         /// or
         /// SPException_WorkflowAlreadyRunning
         /// </exception>
-        public static void StartWorkflow(StartWorkflowParameters parameters, EventLogger log)
+        public static void StartWorkflow(StartWorkflowParameters parameters, IUniverseLogger log)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));
@@ -189,7 +190,7 @@ namespace Universe.Sp.Common.Workflows
         /// or
         /// log
         /// </exception>
-        public static void StartWorkflowOnWeb(StartWebWorkflowParameters parameters, EventLogger log)
+        public static void StartWorkflowOnWeb(StartWebWorkflowParameters parameters, IUniverseLogger log)
         {
             if (parameters == null)
                 throw new ArgumentNullException(nameof(parameters));

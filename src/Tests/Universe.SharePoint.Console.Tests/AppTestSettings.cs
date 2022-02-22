@@ -33,19 +33,23 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Universe.CQRS.Infrastructure;
-
 namespace Universe.Framework.ConsoleApp.Tests
 {
+    using Sp.CQRS.Infrastructure;
+
     /// <summary>
     /// <author>Alex Envision</author>
     /// </summary>
-    public class AppTestSettings: IWebAppSettings
+    public class AppTestSettings: ISpWebAppSettings
     {
-        public string GetUniverseDbConnectionString()
+        public string WebUrl { get; set; }
+        public string WebLogin { get; set; }
+
+        public AppTestSettings()
         {
-            var connectionString = "data source=localhost;initial catalog=UniverseTrainsetsDb;integrated security=True;MultipleActiveResultSets=True;App=UniverseTrainsetsDb";
-            return connectionString;
+            WebUrl = "http://spuniverse-vm001:1000/";
+
+            WebLogin = "i:0#.w|UNIVERSE\\farm-support";
         }
     }
 }

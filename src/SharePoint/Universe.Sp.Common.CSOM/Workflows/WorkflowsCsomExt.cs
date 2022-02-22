@@ -44,6 +44,8 @@ using Universe.Sp.Common.CSOM.Models.Result;
 
 namespace Universe.Sp.Common.CSOM.Workflows
 {
+    using Diagnostic.Logger;
+
     /// <summary>
     ///     Расширения для работы с рабочими процессами на клиентской модели SharePoint.
     ///     Extension workflow on CSOM.
@@ -191,7 +193,7 @@ namespace Universe.Sp.Common.CSOM.Workflows
         ///     The logger.
         /// </param>
         /// <returns></returns>
-        public static void StartWorkflow(StartCsomWorkflowParameters parameters, EventLogger log)
+        public static void StartWorkflow(StartCsomWorkflowParameters parameters, IUniverseLogger log)
         {
             var ctx = new ClientContext(parameters.WebUrl);
 
@@ -257,7 +259,7 @@ namespace Universe.Sp.Common.CSOM.Workflows
         ///     The logger.
         /// </param>
         /// <returns></returns>
-        public static void StartWorkflowOnWeb(StartCsomWebWorkflowParameters parameters, EventLogger log)
+        public static void StartWorkflowOnWeb(StartCsomWebWorkflowParameters parameters, IUniverseLogger log)
         {
             var ctx = new ClientContext(parameters.WebUrl);
             ctx.Credentials = new NetworkCredential(parameters.LoginId, parameters.Password);

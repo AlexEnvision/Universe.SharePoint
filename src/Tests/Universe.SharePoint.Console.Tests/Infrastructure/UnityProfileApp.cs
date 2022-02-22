@@ -35,10 +35,11 @@
 
 using Unity;
 using Unity.Lifetime;
-using Universe.CQRS.Infrastructure;
 
 namespace Universe.Framework.ConsoleApp.Tests.Infrastructure
 {
+    using Sp.CQRS.Infrastructure;
+
     /// <summary>
     /// <author>Alex Envision</author>
     /// </summary>
@@ -54,8 +55,8 @@ namespace Universe.Framework.ConsoleApp.Tests.Infrastructure
         public virtual void Apply()
         {
             // Infrastructure
-            _container.RegisterType<IWebAppSettings, AppTestSettings>(new HierarchicalLifetimeManager());
-            _container.RegisterType<IWebAppPrincipalResolver, AppTestPrincipalResolver>(new SingletonLifetimeManager());
+            _container.RegisterType<ISpWebAppSettings, AppTestSettings>(new HierarchicalLifetimeManager());
+            _container.RegisterType<ISpWebAppPrincipalResolver, AppTestPrincipalResolver>(new SingletonLifetimeManager());
         }
     }
 }
