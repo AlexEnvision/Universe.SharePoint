@@ -1,6 +1,6 @@
 //  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.Framework                                             ║
+//  ║   Copyright 2021 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.Framework                                             ║
+//  ║   Copyright 2021 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -34,11 +34,10 @@
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
 using System;
+using Universe.Sp.CQRS;
 
 namespace Universe.Framework.ConsoleApp.Tests.CQRS.Base
 {
-    using Sp.CQRS;
-
     /// <summary>
     ///     Базовый функционал тестов команд и запросов.
     /// <author>Alex Envision</author>

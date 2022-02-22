@@ -42,13 +42,15 @@ namespace Universe.Sp.CQRS.Models
     /// <author>Alex Envision</author>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class RequestedPage<T>
+    public class SpRequestedPage<T>
     {
         public List<T> Items { get; set; }
 
-        public bool NextPageHavingItems { get; set; }
+        public int? Position { get; set; }
 
-        public RequestedPage()
+        public bool EnableNext { get; set; }
+
+        public SpRequestedPage()
         {
             Items = new List<T>();
         }

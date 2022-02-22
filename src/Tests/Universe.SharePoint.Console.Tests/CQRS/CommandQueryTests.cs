@@ -1,6 +1,6 @@
 //  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.Framework                                             ║
+//  ║   Copyright 2021 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.Framework                                             ║
+//  ║   Copyright 2021 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -34,21 +34,23 @@
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Universe.Diagnostic;
 using Universe.Framework.ConsoleApp.Tests.CQRS.Base;
 using Universe.Framework.ConsoleApp.Tests.Infrastructure;
+using Universe.SharePoint.DataAccess.Test;
+using Universe.SharePoint.DataAccess.Test.Models;
+using Universe.Sp.CQRS.Dal.Commands;
+using Universe.Sp.CQRS.Dal.Queries;
+using Universe.Sp.CQRS.Infrastructure;
+using Universe.Sp.CQRS.Models.Condition;
+using Universe.Sp.CQRS.Models.Page;
+using Universe.Sp.CQRS.Models.Req;
+using Universe.Sp.CQRS.Models.Sort;
 
 namespace Universe.Framework.ConsoleApp.Tests.CQRS
 {
-    using SharePoint.DataAccess.Test;
-    using SharePoint.DataAccess.Test.Models;
-    using Sp.Common.Caml;
-    using Sp.CQRS.Dal.Commands;
-    using Sp.CQRS.Dal.Queries;
-    using Sp.CQRS.Infrastructure;
-    using Sp.CQRS.Models.Req;
-
     /// <summary>
     ///     Тест запросов и команд.
     /// <author>Alex Envision</author>
@@ -105,22 +107,72 @@ namespace Universe.Framework.ConsoleApp.Tests.CQRS
             {
                 var req = new GetSpEntitiesReq
                 {
-                    SpQuery = SpQueryExt.ItemsQuery(
-                        where: CamlHelper.GetCamlWhere(
-                            CamlHelper.CamlChain(
-                                CamlHelper.LogicalOperators.OR,
-                                CamlHelper.CamlChain(
-                                    CamlHelper.LogicalOperators.AND,
-                                    CamlHelper.GetEqText(
-                                        "Name",
-                                        "Trainset001")
-                                ))),
-                        viewFields: CamlHelper.BuildFieldsRef(
-                            "ID",
-                            "Title",
-                            "Name"),
-                        rowLimit: 2000
-                    )
+                    Filters = new List<ConditionConfiguration>
+                    {
+                        new OrConfiguration
+                        {
+                            Operands = new List<ConditionConfiguration>
+                            {
+                                new ContainsConfiguration
+                                {
+                                    LeftOperand = new FieldArgumentConfiguration
+                                    {
+                                        Field = new FieldConfiguration
+                                        {
+                                            SpFieldName = "Name",
+                                        }
+                                    },
+                                    RightOperand = new ValueArgumentConfiguration
+                                    {
+                                        Expression = "9"
+                                    }
+                                },
+                                new ContainsConfiguration
+                                {
+                                    LeftOperand = new FieldArgumentConfiguration
+                                    {
+                                        Field = new FieldConfiguration
+                                        {
+                                            SpFieldName = "Name",
+                                        }
+                                    },
+                                    RightOperand = new ValueArgumentConfiguration
+                                    {
+                                        Expression = "1"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    Sorting = new List<SortConfiguration>
+                    {
+                        new SortConfiguration
+                        {
+                            Field = "Name",
+                            Direction = SortDirection.Desc
+                        }
+                    },
+                    Paging = new Paging
+                    {
+                        CountOnPage = 30,
+                        PageIndex = 1
+                    }
+                    //SpQuery = SpQueryExt.ItemsQuery(
+                    //    where: CamlHelper.GetCamlWhere(
+                    //        CamlHelper.CamlChain(
+                    //            CamlHelper.LogicalOperators.OR,
+                    //            CamlHelper.CamlChain(
+                    //                CamlHelper.LogicalOperators.AND,
+                    //                CamlHelper.GetEqText(
+                    //                    "Name",
+                    //                    "Trainset001")
+                    //            ))),
+                    //    viewFields: CamlHelper.BuildFieldsRef(
+                    //        "ID",
+                    //        "Title",
+                    //        "Name"),
+                    //    rowLimit: 2000
+                    //)
                 };
 
                 Console.WriteLine(@"Чтение данных из SP...");

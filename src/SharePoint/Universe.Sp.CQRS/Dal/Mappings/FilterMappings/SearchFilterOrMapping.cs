@@ -33,21 +33,27 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
+using System.Linq;
+using AutoMapper;
+using Universe.Sp.Common.Caml;
+using Universe.Sp.CQRS.Dal.Mappings.Extensions;
+using Universe.Sp.CQRS.Dal.Mappings.FilterMappings.Base;
+using Universe.Sp.CQRS.Models.Condition;
+using Universe.Sp.CQRS.Models.Filter;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Dal.Mappings.FilterMappings
 {
-    public class TrainsetSp : EntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    internal sealed class SearchFilterOrMapping : CamlChainElementBaseMapping<OrConfiguration, CamlChainRule>
     {
-        public override string ListUrl => "Lists/Trainset";
-
-        public string Name { get; set; }
-
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+        protected override void Configure(IMappingExpression<OrConfiguration, CamlChainRule> config)
+        {
+            base.Configure(config);
+            config.Map(_ => _.RuleBody, _ => CamlHelper.CamlChain(CamlHelper.LogicalOperators.OR,
+                SearchFilterRulesResolver(_.Operands).Select(x => x.RuleBody).ToArray()
+            ));
+        }
     }
 }

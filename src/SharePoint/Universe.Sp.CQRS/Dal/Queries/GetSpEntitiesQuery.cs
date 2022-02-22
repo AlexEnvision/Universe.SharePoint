@@ -33,14 +33,11 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SharePoint;
 using Universe.Sp.CQRS.Dal.Queries.Base;
 using Universe.Sp.CQRS.Extensions;
 using Universe.Sp.CQRS.Models;
-using Universe.Sp.CQRS.Models.Filter;
 using Universe.Sp.CQRS.Models.Req;
 using Universe.Sp.DataAccess.Models;
 using Universe.Types.Collection;
@@ -54,20 +51,8 @@ namespace Universe.Sp.CQRS.Dal.Queries
     /// <typeparam name="TEntitySp"></typeparam>
     public class GetSpEntitiesQuery<TEntitySp> : BaseQuery where TEntitySp : class, IEntitySp, new()
     {
-        public virtual RequestedPage<TEntitySp> Execute(GetSpEntitiesReq req)
+        public virtual SpRequestedPage<TEntitySp> Execute(GetSpEntitiesReq req)
         {
-            //var query = this.DbCtx.Set<TEntitySp>().AsQueryable();
-
-            //var container = req.FieldMapContainer as FieldMapContainer<TEntityDb>;
-
-            //// Построение метаинформации для фильтрации и сортировки
-            //var mi = query.CreateDbRequestMetaInfo(container?.FieldMap, true);
-
-            //var availableItems = query
-            //    .ApplyFiltersAtQuery(req.Filters, mi, req.AllowNoTrackingMode)
-            //    .ApplySortingAtQuery(req.Sorting, mi)
-            //    .GetCurrentPageExtension(req.Paging);
-
             var listUrl = new TEntitySp().ListUrl;
             var list = SpCtx.Web.GetList(listUrl);
 
@@ -75,31 +60,42 @@ namespace Universe.Sp.CQRS.Dal.Queries
             {
                 var query = new QueryBuilder<TEntitySp>();
 
-                query = query.ApplyFiltersAtQuery(req.Filters);
+                //var container = req.FieldMapContainer as FieldMapContainer<TEntityDb>;
 
-                throw new NotImplementedException();
+                //// Построение метаинформации для фильтрации и сортировки
+                //var mi = query.CreateDbRequestMetaInfo(container?.FieldMap, true);
+
+                var availableItems = req.IsAllWithPaging
+                    ? query
+                        .ApplyFiltersAtQuery(req.Filters)
+                        .ApplySortingAtQuery(req.Sorting)
+                        .GetAllItemsAsOnePageExtension(list, req.Paging)
+                    : query
+                        .ApplyFiltersAtQuery(req.Filters)
+                        .ApplySortingAtQuery(req.Sorting)
+                        .GetCurrentPageExtension(list, req.Paging);
+
+                return availableItems;
             }
-            else
+
+            var spListItems = new MatList<SPListItem>();
+            do
             {
-                var spListItems = new MatList<SPListItem>();
-                do
-                {
-                    var collection = list.GetItems(req.SpQuery);
-                    spListItems += collection.Cast<SPListItem>().ToList();
-                    req.SpQuery.ListItemCollectionPosition = collection.ListItemCollectionPosition;
-                } while (req.SpQuery.ListItemCollectionPosition != null);
+                var collection = list.GetItems(req.SpQuery);
+                spListItems += collection.Cast<SPListItem>().ToList();
+                req.SpQuery.ListItemCollectionPosition = collection.ListItemCollectionPosition;
+            } while (req.SpQuery.ListItemCollectionPosition != null);
 
-                var items = spListItems.Select(x => new TEntitySp
-                {
-                    Id = x.ID,
-                    ListItem = x
-                }).ToList();
+            var items = spListItems.Select(x => new TEntitySp
+            {
+                Id = x.ID,
+                ListItem = x
+            }).ToList();
 
-                return new RequestedPage<TEntitySp>
-                {
-                    Items = items
-                };
-            }
+            return new SpRequestedPage<TEntitySp>
+            {
+                Items = items
+            };
         }
     }
 }

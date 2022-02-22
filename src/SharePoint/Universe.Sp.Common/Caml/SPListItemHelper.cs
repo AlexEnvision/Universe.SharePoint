@@ -519,6 +519,66 @@ namespace Universe.Sp.Common.Caml
         }
 
         /// <summary>
+        /// The get double.
+        /// </summary>
+        /// <param name="spListItem">
+        /// The sp list item.
+        /// </param>
+        /// <param name="fieldName">
+        /// The field name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="double"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
+        public static double GetDouble(this SPListItem spListItem, string fieldName)
+        {
+            if (spListItem == null)
+                throw new ArgumentNullException(nameof(spListItem));
+
+            if (fieldName.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(fieldName));
+
+            var i = spListItem.GetDoubleNullable(fieldName);
+            if (i != null)
+                return i.Value;
+
+            return 0;
+        }
+
+        /// <summary>
+        /// The get double nullable.
+        /// </summary>
+        /// <param name="spListItem">
+        /// The sp list item.
+        /// </param>
+        /// <param name="fieldName">
+        /// The field name.
+        /// </param>
+        /// <returns>
+        /// The <see cref="T:double?"/>.
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// </exception>
+        [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider",
+            MessageId = "System.Convert.ToInt32(System.Object)")]
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
+        public static double? GetDoubleNullable(this SPListItem spListItem, string fieldName)
+        {
+            if (spListItem == null)
+                throw new ArgumentNullException(nameof(spListItem));
+
+            if (fieldName.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(fieldName));
+
+            if (spListItem[fieldName] != null)
+                return Convert.ToDouble(spListItem[fieldName]);
+
+            return null;
+        }
+
+        /// <summary>
         /// The get item by id with fields.
         /// </summary>
         /// <param name="list">

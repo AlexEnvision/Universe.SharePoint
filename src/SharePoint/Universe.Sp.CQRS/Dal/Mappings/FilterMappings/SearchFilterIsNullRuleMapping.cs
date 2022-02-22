@@ -33,21 +33,31 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
+using AutoMapper;
+using Universe.Sp.Common.Caml;
+using Universe.Sp.CQRS.Dal.Mappings.Extensions;
+using Universe.Sp.CQRS.Dal.Mappings.Framework;
+using Universe.Sp.CQRS.Models.Condition;
+using Universe.Sp.CQRS.Models.Filter;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Dal.Mappings.FilterMappings
 {
-    public class TrainsetSp : EntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    internal sealed class SearchFilterIsNullRuleMapping : AutoMap<IsNullConfiguration, CamlChainRule>
     {
-        public override string ListUrl => "Lists/Trainset";
+        protected override void Configure(IMappingExpression<IsNullConfiguration, CamlChainRule> config)
+        {
+            base.Configure(config);
+            config.Map(x => x.RuleBody, x => CamlHelper.GetIsNull(this.GetFieldName(x.LeftOperand)));
+        }
 
-        public string Name { get; set; }
-
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+        private string GetFieldName(IArgumentConfiguration operand)
+        {
+            var fieldConfig = operand as FieldArgumentConfiguration;
+            var name = fieldConfig?.Field?.SpFieldName;
+            return name;
+        }
     }
 }

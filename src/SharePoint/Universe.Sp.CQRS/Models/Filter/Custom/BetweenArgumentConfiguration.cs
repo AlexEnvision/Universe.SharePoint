@@ -33,21 +33,17 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
+using Universe.Sp.CQRS.Models.Condition;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Models.Filter.Custom
 {
-    public class TrainsetSp : EntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class BetweenArgumentConfiguration : IArgumentConfiguration
     {
-        public override string ListUrl => "Lists/Trainset";
+        public string Type { get; }
 
-        public string Name { get; set; }
-
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+        public DataTimePeriod Value { get; set; }
     }
 }

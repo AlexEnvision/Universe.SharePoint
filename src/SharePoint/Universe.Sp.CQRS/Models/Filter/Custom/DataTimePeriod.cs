@@ -34,20 +34,16 @@
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
 using System;
-using Universe.Sp.DataAccess.Models;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Models.Filter.Custom
 {
-    public class TrainsetSp : EntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class DataTimePeriod
     {
-        public override string ListUrl => "Lists/Trainset";
+        public DateTimeOffset End { get; set; }
 
-        public string Name { get; set; }
-
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+        public DateTimeOffset Start { get; set; }
     }
 }

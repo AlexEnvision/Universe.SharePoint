@@ -33,21 +33,10 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
-
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Models.Filter
 {
-    public class TrainsetSp : EntitySp
+    public class CamlSortRule
     {
-        public override string ListUrl => "Lists/Trainset";
-
-        public string Name { get; set; }
-
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+        public string RuleBody { get; set; }
     }
 }

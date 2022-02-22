@@ -102,6 +102,11 @@ namespace Universe.Sp.CQRS.Models.Page
         }
 
         /// <summary>
+        /// SP list item position
+        /// </summary>
+        public int? Position { get; set; }
+
+        /// <summary>
         /// Gets the start row.
         /// </summary>
         public int StartRow

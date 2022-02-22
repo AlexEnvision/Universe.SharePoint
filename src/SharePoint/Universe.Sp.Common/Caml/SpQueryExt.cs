@@ -595,5 +595,18 @@ namespace Universe.Sp.Common.Caml
 
             return inputTable;
         }
+
+        public static SPQuery Clone(this SPQuery query)
+        {
+            return new SPQuery
+            {
+                Query = query.Query,
+                ViewFields = query.ViewFields,
+                RowLimit = query.RowLimit,
+                IncludePermissions = query.IncludePermissions,
+                ViewFieldsOnly = query.ViewFieldsOnly,
+                ViewAttributes = query.ViewAttributes
+            };
+        }
     }
 }

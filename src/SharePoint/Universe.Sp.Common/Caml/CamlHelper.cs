@@ -1647,6 +1647,47 @@ namespace Universe.Sp.Common.Caml
         }
 
         /// <summary>
+        ///     Строит CAML выражение: значение поля не равно указанному целочисленному значению.
+        /// </summary>
+        /// <param name="fieldName">
+        ///     Наименование поля.
+        /// </param>
+        /// <param name="value">
+        ///     Значение.
+        /// </param>
+        /// <returns>
+        ///     CAML выражение.
+        /// </returns>
+        public static string GetNeqInteger(string fieldName, int value)
+        {
+            return GetNeq(fieldName, false, Types.INTEGER, value.ToString());
+        }
+
+        /// <summary>
+        ///     Получает разметку оператора сравнения Neq по типу boolean.
+        ///     The get neq bool.
+        /// </summary>
+        /// <param name="fieldName">
+        ///     Наименование поля.
+        ///     The field name.
+        /// </param>
+        /// <param name="value">
+        ///     Значение.
+        ///     The value.
+        /// </param>
+        /// <returns>
+        ///     The <see cref="string"/>.
+        /// </returns>
+        public static string GetNeqBool(string fieldName, bool value)
+        {
+            return GetNeq(
+                fieldName,
+                false,
+                Types.INTEGER,
+                value ? 1.ToString(CultureInfo.CurrentCulture) : 0.ToString(CultureInfo.CurrentCulture));
+        }
+
+        /// <summary>
         ///     Строит CAML выражение: значение поля не равно указанному значению подстановки.
         ///     Сравнение происходит по идентификатору.
         /// </summary>

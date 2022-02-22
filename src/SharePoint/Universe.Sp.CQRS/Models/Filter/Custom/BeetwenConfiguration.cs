@@ -33,21 +33,21 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
+using Universe.Sp.CQRS.Models.Condition;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Models.Filter.Custom
 {
-    public class TrainsetSp : EntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class BetweenConfiguration : ConditionConfiguration
     {
-        public override string ListUrl => "Lists/Trainset";
+        public IArgumentConfiguration LeftOperand { get; set; }
 
-        public string Name { get; set; }
+        public override string Operator => "between";
 
-        public string Title { get; set; }
+        public BetweenArgumentConfiguration RightOperand { get; set; }
 
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+        public string Type { get; } = "between";
     }
 }

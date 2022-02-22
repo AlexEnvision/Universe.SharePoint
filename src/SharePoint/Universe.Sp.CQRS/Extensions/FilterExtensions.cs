@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.Framework                                             ║
+//  ║   Copyright 2021 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.Framework                                             ║
+//  ║   Copyright 2021 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -101,49 +101,49 @@ namespace Universe.Sp.CQRS.Extensions
                 case "eq":
                     return new CamlChainRule
                     {
-                        Chain = CamlHelper.CamlChain(
+                        RuleBody = CamlHelper.CamlChain(
                             CamlHelper.LogicalOperators.AND,
-                            Mapper.Map<EqConfiguration, CamlChainRule>(c as EqConfiguration).Chain
+                            Mapper.Map<EqConfiguration, CamlChainRule>(c as EqConfiguration).RuleBody
                         )
                     };
                 case "neq":
                     return new CamlChainRule
                     {
-                        Chain = CamlHelper.CamlChain(
+                        RuleBody = CamlHelper.CamlChain(
                             CamlHelper.LogicalOperators.AND,
-                            Mapper.Map<NeqConfiguration, CamlChainRule>(c as NeqConfiguration).Chain
+                            Mapper.Map<NeqConfiguration, CamlChainRule>(c as NeqConfiguration).RuleBody
                         )
                     };
                 case "in":
                     return new CamlChainRule
                     {
-                        Chain = CamlHelper.CamlChain(
+                        RuleBody = CamlHelper.CamlChain(
                             CamlHelper.LogicalOperators.AND,
-                            Mapper.Map<InConfiguration, CamlChainRule>(c as InConfiguration).Chain
+                            Mapper.Map<InConfiguration, CamlChainRule>(c as InConfiguration).RuleBody
                         )
                     };
                 case "contains":
                     return new CamlChainRule
                     {
-                        Chain = CamlHelper.CamlChain(
+                        RuleBody = CamlHelper.CamlChain(
                             CamlHelper.LogicalOperators.AND,
-                            Mapper.Map<ContainsConfiguration, CamlChainRule>(c as ContainsConfiguration).Chain
+                            Mapper.Map<ContainsConfiguration, CamlChainRule>(c as ContainsConfiguration).RuleBody
                         )
                     };
                 case "between":
                     return new CamlChainRule
                     {
-                        Chain = CamlHelper.CamlChain(
+                        RuleBody = CamlHelper.CamlChain(
                             CamlHelper.LogicalOperators.AND,
-                            Mapper.Map<BetweenConfiguration, CamlChainRule>(c as BetweenConfiguration).Chain
+                            Mapper.Map<BetweenConfiguration, CamlChainRule>(c as BetweenConfiguration).RuleBody
                         )
                     };
                 case "isNull":
                     return new CamlChainRule
                     {
-                        Chain = CamlHelper.CamlChain(
+                        RuleBody = CamlHelper.CamlChain(
                             CamlHelper.LogicalOperators.AND,
-                            Mapper.Map<IsNullConfiguration, CamlChainRule>(c as IsNullConfiguration).Chain
+                            Mapper.Map<IsNullConfiguration, CamlChainRule>(c as IsNullConfiguration).RuleBody
                         )
                     };
                 default:

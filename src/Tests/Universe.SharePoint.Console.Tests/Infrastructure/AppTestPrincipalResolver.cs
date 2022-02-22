@@ -33,11 +33,11 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
+using Universe.Sp.CQRS.Infrastructure;
+using Universe.Sp.CQRS.Security.Principal;
+
 namespace Universe.Framework.ConsoleApp.Tests.Infrastructure
 {
-    using Sp.CQRS.Infrastructure;
-    using Sp.CQRS.Security.Principal;
-
     /// <summary>
     /// <author>Alex Envision</author>
     /// </summary>

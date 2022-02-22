@@ -33,130 +33,96 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Microsoft.SharePoint;
+using AutoMapper;
+using Newtonsoft.Json;
 using Universe.Helpers.Extensions;
 using Universe.Sp.Common.Caml;
+using Universe.Sp.CQRS.Dal.Mappings.Extensions;
+using Universe.Sp.CQRS.Dal.Mappings.Framework;
+using Universe.Sp.CQRS.Models.Condition;
+using Universe.Sp.CQRS.Models.Filter;
+using Universe.Sp.CQRS.Models.Filter.Custom;
 
-namespace Universe.Sp.CQRS.Infrastructure
+namespace Universe.Sp.CQRS.Dal.Mappings.FilterMappings
 {
-    public class SpMapper
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    internal sealed class SearchFilterNeqRuleMapping : AutoMap<NeqConfiguration, CamlChainRule>
     {
-        private List<PropertyInfo> GetProperties<TEntity>() where TEntity : class, new()
+        protected override void Configure(IMappingExpression<NeqConfiguration, CamlChainRule> config)
         {
-            var type = typeof(TEntity);
-            return GetProperties(type);
+            base.Configure(config);
+            config.Map(x => x.RuleBody, x => GetNeqRule(x.LeftOperand, x.RightOperand));
         }
 
-        private List<PropertyInfo> GetProperties(Type incomingtype)
+        private string GetNeqRule(IArgumentConfiguration leftOperand, IArgumentConfiguration rightOperand)
         {
-            var type = incomingtype;
-
-            var properties = type.GetProperties(
-                BindingFlags.Public | BindingFlags.Instance
-                                    | BindingFlags.GetProperty | BindingFlags.SetProperty);
-
-
-            var q = properties.ToList();
-            q = q.Where(a => a.PropertyType.Name != "SPListItem" && a.Name != "Id" && a.Name != "ListUrl").ToList();
-
-            return q.ToList();
-        }
-
-        public void Map<TEntity>(TEntity entitySp, SPListItem item) where TEntity : class, new()
-        {
-            var properties = GetProperties<TEntity>();
-
-            foreach (PropertyInfo propertyInfo in properties)
+            var rightOperandType = rightOperand.Type;
+            switch (rightOperandType)
             {
-                var name = propertyInfo.Name;
-                var value = propertyInfo.GetValue(entitySp);
+                case "int":
+                    return CamlHelper.GetNeqInteger(this.GetFieldName(leftOperand), this.GetIntegerValue(rightOperand));
 
-                item[name] = value;
+                case "bool":
+                    return CamlHelper.GetNeqBool(this.GetFieldName(leftOperand), this.GetBooleanValue(rightOperand));
+
+                case "lookup":
+                    return CamlHelper.GetNeqLookup(this.GetFieldName(leftOperand), this.GetLookupId(rightOperand));
+
+                default:
+                    return CamlHelper.GetNeqText(this.GetFieldName(leftOperand), this.GetValue(rightOperand));
             }
         }
 
-        public TEntity ReverseMap<TEntity>(SPListItem item, TEntity entitySp) where TEntity : class, new()
+        private string GetFieldName(IArgumentConfiguration operand)
         {
-            var properties = GetProperties<TEntity>();
-
-            foreach (PropertyInfo propertyInfo in properties)
-            {
-                var resolvedValue = ResolveColumnValue(propertyInfo, item);
-                propertyInfo.SetValue(entitySp, resolvedValue);
-            }
-
-            return entitySp;
+            var fieldConfig = operand as FieldArgumentConfiguration;
+            var name = fieldConfig?.Field?.SpFieldName;
+            return name;
         }
 
-        private object ResolveColumnValue(PropertyInfo propertyInfo, SPListItem item)
+        private bool GetBooleanValue(IArgumentConfiguration operand)
         {
-            var fieldName = propertyInfo.Name;
-            var propertyTypeName = propertyInfo.PropertyType.Name;
-            var propertyTypeNameForCompare = propertyTypeName.PrepareToCompare();
+            var valueConfig = operand as ValueArgumentConfiguration;
+            var value = valueConfig?.Expression?.Replace("'", "");
+            return bool.TryParse(value, out var boolValue) && boolValue;
+        }
 
-            if (propertyTypeNameForCompare == typeof(bool).Name.PrepareToCompare())
+        private int GetIntegerValue(IArgumentConfiguration operand)
+        {
+            var valueConfig = operand as ValueArgumentConfiguration;
+            var value = valueConfig?.Expression?.Replace("'", "");
+            return int.TryParse(value, out var intValue) ? intValue : 0;
+        }
+
+        private int GetLookupId(IArgumentConfiguration operand)
+        {
+            var valueConfig = operand as ValueArgumentConfiguration;
+            var possibleObject = valueConfig?.Expression;
+            if (possibleObject != null && (!possibleObject.IsNullOrEmpty() &&
+                                           (possibleObject.StartsWith("{") ||
+                                            possibleObject.StartsWith("["))))
             {
-                return item.GetBool(fieldName);
+                var expressionHasObject = JsonConvert.DeserializeObject<List<LookupValueConfiguration>>(valueConfig?.Expression);
+                var obj = expressionHasObject?.FirstOrDefault();
+                if (obj != null)
+                {
+                    var lookupvalue = obj?.LookupId ?? 0;
+                    return lookupvalue;
+                }
             }
 
-            if (propertyTypeNameForCompare == typeof(int).Name.PrepareToCompare() ||
-                propertyTypeNameForCompare == typeof(long).Name.PrepareToCompare())
-            {
-                return item.GetInt32(fieldName);
-            }
+            return 0;
+        }
 
-            if (propertyTypeNameForCompare == typeof(int?).Name.PrepareToCompare() ||
-                propertyTypeNameForCompare == typeof(long?).Name.PrepareToCompare())
-            {
-                return item.GetInt32Nullable(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(double).Name.PrepareToCompare())
-            {
-                return item.GetDouble(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(double?).Name.PrepareToCompare())
-            {
-                return item.GetDoubleNullable(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(decimal).Name.PrepareToCompare())
-            {
-                return item.GetDecimal(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(decimal?).Name.PrepareToCompare())
-            {
-                return item.GetDecimalNullable(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(string).Name.PrepareToCompare())
-            {
-                return item.GetString(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(DateTime).Name.PrepareToCompare())
-            {
-                return item.GetDateTime(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(DateTime?).Name.PrepareToCompare())
-            {
-                return item.GetDateTimeNullable(fieldName);
-            }
-
-            if (propertyTypeNameForCompare == typeof(Guid).Name.PrepareToCompare() ||
-                propertyTypeNameForCompare == typeof(Guid?).Name.PrepareToCompare())
-            {
-                return item.GetGuid(fieldName);
-            }
-
-            return item.GetValueByInternalName(propertyInfo.Name);
+        private string GetValue(IArgumentConfiguration operand)
+        {
+            var valueConfig = operand as ValueArgumentConfiguration;
+            var value = valueConfig?.Expression.Replace("'", "");
+            return value;
         }
     }
 }

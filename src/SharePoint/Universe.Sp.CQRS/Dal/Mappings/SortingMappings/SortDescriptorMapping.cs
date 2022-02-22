@@ -33,21 +33,36 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
+using AutoMapper;
+using Universe.Sp.Common.Caml;
+using Universe.Sp.CQRS.Dal.Mappings.Extensions;
+using Universe.Sp.CQRS.Dal.Mappings.Framework;
+using Universe.Sp.CQRS.Models.Filter;
+using Universe.Sp.CQRS.Models.Sort;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Dal.Mappings.SortingMappings
 {
-    public class TrainsetSp : EntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    internal sealed class SortDescriptorMapping : AutoMap<SortConfiguration, CamlSortRule>
     {
-        public override string ListUrl => "Lists/Trainset";
+        protected override void Configure(IMappingExpression<SortConfiguration, CamlSortRule> config)
+        {
+            base.Configure(config);
+            config.Map(x => x.RuleBody,
+                x => CamlHelper.GetCamlOrderByElement(this.MapFieldWithUpperLetter(x.Field),
+                    x.Direction == SortDirection.Asc));
+        }
 
-        public string Name { get; set; }
+        private string MapFieldWithUpperLetter(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return str;
+            }
 
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+            return str.Substring(0, 1).ToUpper() + str.Substring(1, str.Length - 1);
+        }
     }
 }

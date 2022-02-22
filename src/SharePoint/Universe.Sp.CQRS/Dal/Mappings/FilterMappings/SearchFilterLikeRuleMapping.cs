@@ -33,21 +33,38 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
+using AutoMapper;
+using Universe.Sp.Common.Caml;
+using Universe.Sp.CQRS.Dal.Mappings.Extensions;
+using Universe.Sp.CQRS.Dal.Mappings.Framework;
+using Universe.Sp.CQRS.Models.Condition;
+using Universe.Sp.CQRS.Models.Filter;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Dal.Mappings.FilterMappings
 {
-    public class TrainsetSp : EntitySp
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    internal class SearchFilterLikeRuleMapping : AutoMap<ContainsConfiguration, CamlChainRule>
     {
-        public override string ListUrl => "Lists/Trainset";
+        protected override void Configure(IMappingExpression<ContainsConfiguration, CamlChainRule> config)
+        {
+            base.Configure(config);
+            config.Map(x => x.RuleBody, x => CamlHelper.GetContainsText(this.GetFieldName(x.LeftOperand), this.GetValue(x.RightOperand)));
+        }
 
-        public string Name { get; set; }
+        private string GetFieldName(IArgumentConfiguration operand)
+        {
+            var fieldConfig = operand as FieldArgumentConfiguration;
+            var name = fieldConfig?.Field?.SpFieldName;
+            return name;
+        }
 
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+        private string GetValue(IArgumentConfiguration operand)
+        {
+            var valueConfig = operand as ValueArgumentConfiguration;
+            var value = valueConfig?.Expression.Replace("'", "");
+            return value;
+        }
     }
 }

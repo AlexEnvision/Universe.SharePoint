@@ -35,11 +35,10 @@
 
 using Unity;
 using Unity.Lifetime;
+using Universe.Sp.CQRS.Infrastructure;
 
 namespace Universe.Framework.ConsoleApp.Tests.Infrastructure
 {
-    using Sp.CQRS.Infrastructure;
-
     /// <summary>
     /// <author>Alex Envision</author>
     /// </summary>

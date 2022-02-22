@@ -33,21 +33,30 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System;
-using Universe.Sp.DataAccess.Models;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
+using Universe.Sp.CQRS.Models;
+using Universe.Sp.CQRS.Models.Filter;
+using Universe.Sp.CQRS.Models.Sort;
 
-namespace Universe.SharePoint.DataAccess.Test.Models
+namespace Universe.Sp.CQRS.Extensions
 {
-    public class TrainsetSp : EntitySp
+    public static class SortingExtensions
     {
-        public override string ListUrl => "Lists/Trainset";
+        public static QueryBuilder<T> ApplySortingAtQuery<T>(
+            this QueryBuilder<T> query, 
+            List<SortConfiguration> sorting)
+            where T : class
+        {
+            var sortDescriptors = sorting?.Select(Mapper.Map<SortConfiguration, CamlSortRule>).ToList();
 
-        public string Name { get; set; }
+            QueryBuilder<T> possiballyFilteredQuery = query;
+            possiballyFilteredQuery = possiballyFilteredQuery.OrderBy(sortDescriptors);
 
-        public string Title { get; set; }
-
-        public int? SetNumber { get; set; }
-
-        public DateTime Created { get; set; }
+            if (possiballyFilteredQuery != null)
+                query = possiballyFilteredQuery;
+            return query;
+        }
     }
 }

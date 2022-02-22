@@ -34,11 +34,10 @@
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
 using System;
+using Universe.Framework.ConsoleApp.Tests.CQRS;
 
 namespace Universe.Framework.ConsoleApp.Tests
 {
-    using CQRS;
-
     /// <summary>
     /// <author>Alex Envision</author>
     /// </summary>
@@ -47,7 +46,7 @@ namespace Universe.Framework.ConsoleApp.Tests
         static void Main(string[] args)
         {
             var commandQueryTests = new CommandQueryTests();
-            commandQueryTests.CreateEntityQueryTest();
+            //commandQueryTests.CreateEntityQueryTest();
             commandQueryTests.ReadEntityQueryTest();
 
             Console.WriteLine(@"Для продолжения нажмите любую клавишу...");
