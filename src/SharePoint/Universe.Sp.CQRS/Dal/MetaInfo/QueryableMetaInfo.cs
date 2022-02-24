@@ -33,51 +33,79 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.SharePoint;
-using Universe.Sp.Common.Caml;
-using Universe.Sp.CQRS.Models.Filter;
+using System.Linq.Expressions;
 
-namespace Universe.Sp.CQRS.Models
+namespace Universe.Sp.CQRS.Dal.MetaInfo
 {
-    public class QueryBuilder<T> where T: class
+    /// <summary>
+    ///     The queryable meta info.
+    /// <author>Alex Envision</author>
+    /// </summary>
+    /// <typeparam name="TSource">
+    /// </typeparam>
+    public class QueryableMetaInfo<TSource> : BaseMetaInfo
     {
-        public SPQuery SpQuery
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QueryableMetaInfo{TSource}"/> class.
+        /// </summary>
+        /// <param name="entityName">
+        /// The entity name.
+        /// </param>
+        public QueryableMetaInfo(string entityName)
+            : base(entityName)
         {
-            get => SpQueryExt.ItemsQuery(
-                where: CamlWhere ?? string.Empty,
-                order: CamlOrder ?? string.Empty,
-                viewFields: CamlViewFields ?? string.Empty);
         }
 
-        public string CamlWhere { get; set; }
+        /// <summary>
+        /// Gets the mappin sortg dictionary.
+        /// </summary>
+        public Dictionary<string, Expression<Func<TSource, object>>> MappinSortDictionary { get; private set; }
 
-        public string CamlOrder { get; set; }
-
-        public string CamlViewFields { get; set; }
-
-        public QueryBuilder<T> WhereByFilters(List<CamlChainRule> filters)
+        /// <summary>
+        /// The build dictionary sort.
+        /// </summary>
+        /// <returns>
+        /// The <see cref="Dictionary{TKey,TValue}"/>.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// </exception>
+        public Dictionary<string, Expression<Func<TSource, object>>> BuildDictionarySort()
         {
-            if (filters == null)
-                return this;
+            var result = new Dictionary<string, Expression<Func<TSource, object>>>();
+            foreach (var fieldMetaInfo in FieldsMetaInfo.ConvertAll(_ => (QueryableFieldMetaInfo<TSource>)_))
+            {
+                if (fieldMetaInfo.Sortable)
+                    try
+                    {
+                        result.Add(fieldMetaInfo.Name, fieldMetaInfo.DbFieldSelector);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"{fieldMetaInfo.Name} - {ex.Message}", ex);
+                    }
+            }
 
-            var chains = filters.Select(x => x.RuleBody).ToArray();
-
-            CamlWhere = CamlHelper.GetCamlWhere(CamlHelper.CamlChain(
-                CamlHelper.LogicalOperators.OR,
-                chains));
-
-            return this;
+            return result;
         }
 
-        public QueryBuilder<T> OrderBy(List<CamlSortRule> rules)
+        /// <summary>
+        /// The build meta info.
+        /// </summary>
+        /// <exception cref="Exception">
+        /// </exception>
+        public void BuildMetaInfo()
         {
-            var descriptors = rules.Select(x => x.RuleBody).ToArray();
-
-            CamlOrder = CamlHelper.GetCamlOrderBy(descriptors);
-
-            return this;
+            try
+            {
+                MappinSortDictionary = BuildDictionarySort();
+                BuildGridViewColumnsExtent();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"При инициализации метаописания для {EntityName}, произошла ошибка: {ex.Message}", ex);
+            }
         }
     }
 }

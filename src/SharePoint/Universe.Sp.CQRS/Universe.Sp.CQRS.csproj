@@ -66,6 +66,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dal\Base\DataAccessExtensions.cs" />
+    <Compile Include="Dal\Base\OneParameterRebinder.cs" />
+    <Compile Include="Dal\Base\QueryableMetaInfoExtensions.cs" />
     <Compile Include="Dal\CommandQueryBuilder.cs" />
     <Compile Include="Dal\Commands\AddSpEntityCommand.cs" />
     <Compile Include="Dal\Commands\Base\BaseCommand.cs" />
@@ -91,8 +94,14 @@
     <Compile Include="Dal\Mappings\Framework\AutoMap.cs" />
     <Compile Include="Dal\Mappings\Framework\IAutoMap.cs" />
     <Compile Include="Dal\Mappings\SortingMappings\SortDescriptorMapping.cs" />
+    <Compile Include="Dal\MetaInfo\BaseFieldMetaInfo.cs" />
+    <Compile Include="Dal\MetaInfo\BaseMetaInfo.cs" />
+    <Compile Include="Dal\MetaInfo\QueryableFieldMetaInfo.cs" />
+    <Compile Include="Dal\MetaInfo\QueryableMetaInfo.cs" />
     <Compile Include="Dal\Queries\Base\BaseQuery.cs" />
     <Compile Include="Dal\Queries\GetSpEntitiesQuery.cs" />
+    <Compile Include="Extensions\EntitySpQueryExtensions.cs" />
+    <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\FilterExtensions.cs" />
     <Compile Include="Extensions\PagingExtensions.cs" />
     <Compile Include="Extensions\SortingExtensions.cs" />
@@ -132,6 +141,7 @@
     <Compile Include="Models\Filter\Custom\DataTimePeriod.cs" />
     <Compile Include="Models\Filter\Custom\LookupValueConfiguration.cs" />
     <Compile Include="Models\Filter\FieldMapContainer.cs" />
+    <Compile Include="Models\Filter\FieldTypes.cs" />
     <Compile Include="Models\Filter\IFieldMapContainer.cs" />
     <Compile Include="Models\Page\Paging.cs" />
     <Compile Include="Models\QueryBuilder.cs" />
@@ -148,9 +158,7 @@
     <Compile Include="Security\Principal\SpWebAppIdentity.cs" />
     <Compile Include="Security\Principal\SpWebAppPrincipal.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dal\Base\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

@@ -35,6 +35,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Newtonsoft.Json;
 using Universe.Diagnostic;
 using Universe.Framework.ConsoleApp.Tests.CQRS.Base;
@@ -45,6 +46,7 @@ using Universe.Sp.CQRS.Dal.Commands;
 using Universe.Sp.CQRS.Dal.Queries;
 using Universe.Sp.CQRS.Infrastructure;
 using Universe.Sp.CQRS.Models.Condition;
+using Universe.Sp.CQRS.Models.Filter;
 using Universe.Sp.CQRS.Models.Page;
 using Universe.Sp.CQRS.Models.Req;
 using Universe.Sp.CQRS.Models.Sort;
@@ -107,6 +109,13 @@ namespace Universe.Framework.ConsoleApp.Tests.CQRS
             {
                 var req = new GetSpEntitiesReq
                 {
+                    FieldMapContainer = new FieldMapContainer<TrainsetSp>
+                    {
+                        FieldMap = new Dictionary<string, Expression<Func<TrainsetSp, object>>>
+                        {
+                            { "Number", x => x.SetNumber }
+                        }
+                    },
                     Filters = new List<ConditionConfiguration>
                     {
                         new OrConfiguration
@@ -134,6 +143,20 @@ namespace Universe.Framework.ConsoleApp.Tests.CQRS
                                         Field = new FieldConfiguration
                                         {
                                             SpFieldName = "Name",
+                                        }
+                                    },
+                                    RightOperand = new ValueArgumentConfiguration
+                                    {
+                                        Expression = "1"
+                                    }
+                                },
+                                new EqConfiguration
+                                {
+                                    LeftOperand = new FieldArgumentConfiguration
+                                    {
+                                        Field = new FieldConfiguration
+                                        {
+                                            SpFieldName = "Number",
                                         }
                                     },
                                     RightOperand = new ValueArgumentConfiguration

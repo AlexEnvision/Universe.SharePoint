@@ -33,51 +33,80 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.SharePoint;
-using Universe.Sp.Common.Caml;
-using Universe.Sp.CQRS.Models.Filter;
+using System;
+using System.Linq.Expressions;
+using Universe.Sp.CQRS.Dal.Base;
 
-namespace Universe.Sp.CQRS.Models
+namespace Universe.Sp.CQRS.Dal.MetaInfo
 {
-    public class QueryBuilder<T> where T: class
+    /// <summary>
+    ///     The queryable field meta info.
+    /// <author>Alex Envision</author>
+    /// </summary>
+    /// <typeparam name="TSource">
+    /// </typeparam>
+    public class QueryableFieldMetaInfo<TSource> : BaseFieldMetaInfo
     {
-        public SPQuery SpQuery
+        /// <summary>
+        /// The _data type.
+        /// </summary>
+        private Type _dataType;
+
+        /// <summary>
+        /// The _db field selector for extent func.
+        /// </summary>
+        private Func<TSource, object> _dbFieldSelectorForExtentFunc;
+
+        /// <summary>
+        /// Gets the data type.
+        /// </summary>
+        public override Type DataType => _dataType ?? (_dataType = DbFieldSelector.GetPropertyType());
+
+        /// <summary>
+        /// Gets or sets the db field selector.
+        /// </summary>
+        public Expression<Func<TSource, object>> DbFieldSelector { get; set; }
+
+        /// <summary>
+        /// Gets or sets the db field selector for extent.
+        /// </summary>
+        public Expression<Func<TSource, object>> DbFieldSelectorForExtent { get; set; }
+
+        /// <summary>
+        /// Gets the db field selector for extent func.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// </exception>
+        public Func<TSource, object> DbFieldSelectorForExtentFunc
         {
-            get => SpQueryExt.ItemsQuery(
-                where: CamlWhere ?? string.Empty,
-                order: CamlOrder ?? string.Empty,
-                viewFields: CamlViewFields ?? string.Empty);
+            get
+            {
+                if (_dbFieldSelectorForExtentFunc != null)
+                    return _dbFieldSelectorForExtentFunc;
+
+                if (DbFieldSelectorForExtent != null)
+                    _dbFieldSelectorForExtentFunc = DbFieldSelectorForExtent.Compile();
+                else if (DbFieldSelector != null)
+                    _dbFieldSelectorForExtentFunc = DbFieldSelector.Compile();
+                else
+                    throw new InvalidOperationException("DbFieldSelectorForExtentFunc");
+
+                return _dbFieldSelectorForExtentFunc;
+            }
         }
 
-        public string CamlWhere { get; set; }
-
-        public string CamlOrder { get; set; }
-
-        public string CamlViewFields { get; set; }
-
-        public QueryBuilder<T> WhereByFilters(List<CamlChainRule> filters)
+        /// <summary>
+        /// Gets or sets the field type.
+        /// </summary>
+        public override string FieldType
         {
-            if (filters == null)
-                return this;
+            get
+            {
+                if (FieldTypeEnum != null)
+                    return FieldTypeEnum.Value.ToString();
 
-            var chains = filters.Select(x => x.RuleBody).ToArray();
-
-            CamlWhere = CamlHelper.GetCamlWhere(CamlHelper.CamlChain(
-                CamlHelper.LogicalOperators.OR,
-                chains));
-
-            return this;
-        }
-
-        public QueryBuilder<T> OrderBy(List<CamlSortRule> rules)
-        {
-            var descriptors = rules.Select(x => x.RuleBody).ToArray();
-
-            CamlOrder = CamlHelper.GetCamlOrderBy(descriptors);
-
-            return this;
+                return GetFieldType(DataType);
+            }
         }
     }
 }

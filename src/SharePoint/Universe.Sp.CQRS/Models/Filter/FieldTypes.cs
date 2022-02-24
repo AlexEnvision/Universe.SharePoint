@@ -33,51 +33,36 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.SharePoint;
-using Universe.Sp.Common.Caml;
-using Universe.Sp.CQRS.Models.Filter;
-
-namespace Universe.Sp.CQRS.Models
+namespace Universe.Sp.CQRS.Models.Filter
 {
-    public class QueryBuilder<T> where T: class
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public enum FieldTypes
     {
-        public SPQuery SpQuery
-        {
-            get => SpQueryExt.ItemsQuery(
-                where: CamlWhere ?? string.Empty,
-                order: CamlOrder ?? string.Empty,
-                viewFields: CamlViewFields ?? string.Empty);
-        }
+        /// <summary>
+        /// The int.
+        /// </summary>
+        Int,
 
-        public string CamlWhere { get; set; }
+        /// <summary>
+        /// The number.
+        /// </summary>
+        Number,
 
-        public string CamlOrder { get; set; }
+        /// <summary>
+        /// The string.
+        /// </summary>
+        String,
 
-        public string CamlViewFields { get; set; }
+        /// <summary>
+        /// The date time offset.
+        /// </summary>
+        DateTimeOffset,
 
-        public QueryBuilder<T> WhereByFilters(List<CamlChainRule> filters)
-        {
-            if (filters == null)
-                return this;
-
-            var chains = filters.Select(x => x.RuleBody).ToArray();
-
-            CamlWhere = CamlHelper.GetCamlWhere(CamlHelper.CamlChain(
-                CamlHelper.LogicalOperators.OR,
-                chains));
-
-            return this;
-        }
-
-        public QueryBuilder<T> OrderBy(List<CamlSortRule> rules)
-        {
-            var descriptors = rules.Select(x => x.RuleBody).ToArray();
-
-            CamlOrder = CamlHelper.GetCamlOrderBy(descriptors);
-
-            return this;
-        }
+        /// <summary>
+        /// The bool.
+        /// </summary>
+        Bool
     }
 }

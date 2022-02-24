@@ -35,9 +35,11 @@
 
 using System.Linq;
 using Microsoft.SharePoint;
+using Universe.Sp.CQRS.Dal.MetaInfo;
 using Universe.Sp.CQRS.Dal.Queries.Base;
 using Universe.Sp.CQRS.Extensions;
 using Universe.Sp.CQRS.Models;
+using Universe.Sp.CQRS.Models.Filter;
 using Universe.Sp.CQRS.Models.Req;
 using Universe.Sp.DataAccess.Models;
 using Universe.Types.Collection;
@@ -60,19 +62,19 @@ namespace Universe.Sp.CQRS.Dal.Queries
             {
                 var query = new QueryBuilder<TEntitySp>();
 
-                //var container = req.FieldMapContainer as FieldMapContainer<TEntityDb>;
+                var container = req.FieldMapContainer as FieldMapContainer<TEntitySp>;
 
-                //// Построение метаинформации для фильтрации и сортировки
-                //var mi = query.CreateDbRequestMetaInfo(container?.FieldMap, true);
+                // Построение метаинформации для фильтрации и сортировки
+                QueryableMetaInfo<TEntitySp> mi = query.CreateDbRequestMetaInfo(container?.FieldMap, true);
 
                 var availableItems = req.IsAllWithPaging
                     ? query
-                        .ApplyFiltersAtQuery(req.Filters)
-                        .ApplySortingAtQuery(req.Sorting)
+                        .ApplyFiltersAtQuery(req.Filters, mi)
+                        .ApplySortingAtQuery(req.Sorting, mi)
                         .GetAllItemsAsOnePageExtension(list, req.Paging)
                     : query
-                        .ApplyFiltersAtQuery(req.Filters)
-                        .ApplySortingAtQuery(req.Sorting)
+                        .ApplyFiltersAtQuery(req.Filters, mi)
+                        .ApplySortingAtQuery(req.Sorting, mi)
                         .GetCurrentPageExtension(list, req.Paging);
 
                 return availableItems;

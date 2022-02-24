@@ -36,6 +36,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Universe.Sp.CQRS.Dal.MetaInfo;
 using Universe.Sp.CQRS.Models;
 using Universe.Sp.CQRS.Models.Filter;
 using Universe.Sp.CQRS.Models.Sort;
@@ -44,9 +45,8 @@ namespace Universe.Sp.CQRS.Extensions
 {
     public static class SortingExtensions
     {
-        public static QueryBuilder<T> ApplySortingAtQuery<T>(
-            this QueryBuilder<T> query, 
-            List<SortConfiguration> sorting)
+        public static QueryBuilder<T> ApplySortingAtQuery<T>(this QueryBuilder<T> query,
+            List<SortConfiguration> sorting, QueryableMetaInfo<T> mi)
             where T : class
         {
             var sortDescriptors = sorting?.Select(Mapper.Map<SortConfiguration, CamlSortRule>).ToList();

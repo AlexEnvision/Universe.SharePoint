@@ -33,51 +33,95 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.SharePoint;
-using Universe.Sp.Common.Caml;
-using Universe.Sp.CQRS.Models.Filter;
+using System.Linq.Expressions;
+using System.Reflection;
+using Universe.Helpers.Extensions;
+using Universe.Sp.CQRS.Dal.Base;
+using Universe.Sp.CQRS.Dal.MetaInfo;
+using Universe.Sp.CQRS.Models;
 
-namespace Universe.Sp.CQRS.Models
+namespace Universe.Sp.CQRS.Extensions
 {
-    public class QueryBuilder<T> where T: class
+    /// <summary>
+    /// <author>Alex Envision</author>
+    /// </summary>
+    internal static class EntitySpQueryExtensions
     {
-        public SPQuery SpQuery
+        private static bool CanIgnore(PropertyInfo propDto) =>
+            propDto.PropertyType == typeof(List<>) ||
+            propDto.PropertyType == typeof(IList<>);
+
+        /// <summary>
+        /// Создает метаинформацию на основе типа
+        /// </summary>
+        /// <typeparam name="TEntitySp"></typeparam>
+        public static QueryableMetaInfo<TEntitySp> CreateDbRequestMetaInfo<TEntitySp>(
+            this QueryBuilder<TEntitySp> query,
+            Dictionary<string, Expression<Func<TEntitySp, object>>> fieldMap,
+            bool disablePropsMiSearch = false)
+            where TEntitySp : class
         {
-            get => SpQueryExt.ItemsQuery(
-                where: CamlWhere ?? string.Empty,
-                order: CamlOrder ?? string.Empty,
-                viewFields: CamlViewFields ?? string.Empty);
+            QueryableMetaInfo<TEntitySp> metainfo = query.CreateQueryableMetaInfo(
+                Activator.CreateInstance(typeof(TEntitySp)),
+                typeof(TEntitySp).Name);
+
+            var properties = typeof(TEntitySp)
+                .GetProperties();
+
+            var propertiesDtoEntity = properties.GroupBy(g => g.Name).ToDictionary(g => g.Key, g => g.ToList());
+
+            //Регистрация кастомной метаинформации вне зависимости от полей входящей сущности,
+            //а также регистрация ключей с маленькой буквы
+            if (fieldMap != null && fieldMap.Count != 0)
+                foreach (var kvp in fieldMap)
+                {
+                    var name = kvp.Key;
+                    var field = kvp.Value;
+                    metainfo.AddField(name, field, name);
+                    metainfo.AddField(name.FirstLetterToLower(), field, name.FirstLetterToLower());
+                }
+
+            if (!disablePropsMiSearch)
+                foreach (var kvp in propertiesDtoEntity)
+                {
+                    var propDtoTypeList = kvp.Value;
+                    foreach (var propDto in propDtoTypeList)
+                    {
+                        var name = kvp.Key;
+
+                        if (CanIgnore(propDto))
+                            continue;
+
+                        // Игнорирование базовах классов при совпадении имен
+                        if (propDtoTypeList.Count > 1 && propDto.DeclaringType != typeof(TEntitySp))
+                            continue;
+
+                        if (fieldMap != null &&
+                            fieldMap.TryGetValue(name, out var field))
+                            continue;
+
+                        var newExpression = ExpressionExtensions.CreateExpressionDbeUniversal<TEntitySp>(name);
+                        if (newExpression != null)
+                        {
+                            metainfo.AddField(name, newExpression, name);
+                            metainfo.AddField(name.FirstLetterToLower(), newExpression, name.FirstLetterToLower());
+                        }
+                    }
+                }
+
+            metainfo.BuildMetaInfo();
+            return metainfo;
         }
 
-        public string CamlWhere { get; set; }
-
-        public string CamlOrder { get; set; }
-
-        public string CamlViewFields { get; set; }
-
-        public QueryBuilder<T> WhereByFilters(List<CamlChainRule> filters)
+        private static Expression<Func<object, object>> CreateExpression(Type entityType, string propertyName)
         {
-            if (filters == null)
-                return this;
-
-            var chains = filters.Select(x => x.RuleBody).ToArray();
-
-            CamlWhere = CamlHelper.GetCamlWhere(CamlHelper.CamlChain(
-                CamlHelper.LogicalOperators.OR,
-                chains));
-
-            return this;
-        }
-
-        public QueryBuilder<T> OrderBy(List<CamlSortRule> rules)
-        {
-            var descriptors = rules.Select(x => x.RuleBody).ToArray();
-
-            CamlOrder = CamlHelper.GetCamlOrderBy(descriptors);
-
-            return this;
+            var param = Expression.Parameter(typeof(object), "e");
+            Expression body = Expression.PropertyOrField(Expression.TypeAs(param, entityType), propertyName);
+            var getterExpression = Expression.Lambda<Func<object, object>>(body, param);
+            return getterExpression;
         }
     }
 }

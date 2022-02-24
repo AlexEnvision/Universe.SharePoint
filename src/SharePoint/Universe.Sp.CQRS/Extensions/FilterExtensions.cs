@@ -33,10 +33,14 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
+using Universe.Helpers.Extensions;
 using Universe.Sp.Common.Caml;
+using Universe.Sp.CQRS.Dal.MetaInfo;
 using Universe.Sp.CQRS.Models;
 using Universe.Sp.CQRS.Models.Condition;
 using Universe.Sp.CQRS.Models.Filter;
@@ -53,13 +57,16 @@ namespace Universe.Sp.CQRS.Extensions
         /// </summary>
         /// <param name="query">Запрос к БД</param>
         /// <param name="conditions">Условия</param>
+        /// <param name="mi"></param>
         /// <returns>Запрос к SP с примененными фильтрами</returns>
-        public static QueryBuilder<T> ApplyFiltersAtQuery<T>(
-            this QueryBuilder<T> query,
-            IList<ConditionConfiguration> conditions)
+        public static QueryBuilder<T> ApplyFiltersAtQuery<T>(this QueryBuilder<T> query,
+            IList<ConditionConfiguration> conditions, 
+            QueryableMetaInfo<T> mi)
             where T : class
         {
-            var filters = ResolveSearchFilters(conditions);
+            var conditionsResolvedFieldNames = ReplaceFieldNamesByMetaInfo(conditions, mi);
+
+            var filters = ResolveSearchFilters(conditionsResolvedFieldNames);
 
             QueryBuilder<T> possiballyFilteredQuery = query;
             possiballyFilteredQuery = possiballyFilteredQuery.WhereByFilters(filters);
@@ -69,25 +76,111 @@ namespace Universe.Sp.CQRS.Extensions
             return query;
         }
 
-        /// <summary>
-        /// Применение фильтров (условий)
-        /// </summary>
-        /// <param name="query">Запрос к БД</param>
-        /// <param name="conditions">Условия</param>
-        /// <returns>Запрос к SP с примененными фильтрами</returns>
-        public static QueryBuilder<T> ApplyFiltersAtQuery<T, TEntityDto>(
-            this QueryBuilder<T> query,
-            IList<ConditionConfiguration> conditions) 
+        private static IList<ConditionConfiguration> ReplaceFieldNamesByMetaInfo<T>(
+            IList<ConditionConfiguration> conditions,
+            QueryableMetaInfo<T> mi)
             where T : class
         {
-            var filters = ResolveSearchFilters(conditions);
+            foreach (var fieldMetaInfo in mi.FieldsMetaInfo)
+            {
+                var item = fieldMetaInfo as QueryableFieldMetaInfo<T>;
+                if (item != null)
+                {
+                    var name = item.Name;
 
-            QueryBuilder<T> possiballyFilteredQuery = query;
-            possiballyFilteredQuery = possiballyFilteredQuery.WhereByFilters(filters);
+                    var selector = item.DbFieldSelector;
+                    var expression = (UnaryExpression)selector.Body;
+                    var operand = (MemberExpression)expression.Operand;
+                    var resolveName = operand.Member.Name;
 
-            if (possiballyFilteredQuery != null)
-                query = possiballyFilteredQuery;
-            return query;
+                    for (var index = 0; index < conditions.Count; index++)
+                    {
+                        var conditionConfiguration = conditions[index];
+                        conditionConfiguration =
+                            FilterConfigurationReplaceName(conditionConfiguration, name, resolveName);
+                    }
+                }
+            }
+
+            return conditions;
+        }
+
+        private static ConditionConfiguration FilterConfigurationReplaceName(ConditionConfiguration configuration, string from, string to)
+        {
+            switch (configuration)
+            {
+                case AndConfiguration andConfiguration:
+                    foreach (var andConfigurationOperand in andConfiguration.Operands)
+                    {
+                        FilterConfigurationReplaceName(andConfigurationOperand, from, to);
+                    }
+
+                    return andConfiguration;
+
+                case BetweenConfiguration betweenConfiguration:
+                    betweenConfiguration.LeftOperand = SetFieldArgument(from, to, betweenConfiguration.LeftOperand);
+                    return betweenConfiguration;
+                    
+                case ContainsConfiguration containsConfiguration:
+                    containsConfiguration.LeftOperand = SetFieldArgument(from, to, containsConfiguration.LeftOperand);
+                    return containsConfiguration;
+
+                case EqConfiguration eqConfiguration:
+                    eqConfiguration.LeftOperand = SetFieldArgument(from, to, eqConfiguration.LeftOperand);
+                    return eqConfiguration;
+
+                case InConfiguration inConfiguration:
+                    inConfiguration.LeftOperand = SetFieldArgument(from, to, inConfiguration.LeftOperand);
+                    return inConfiguration;
+
+                case IsNotNullConfiguration isNotNullConfiguration:
+                    isNotNullConfiguration.LeftOperand = SetFieldArgument(from, to, isNotNullConfiguration.LeftOperand);
+                    return isNotNullConfiguration;
+
+                case IsNullConfiguration isNullConfiguration:
+                    isNullConfiguration.LeftOperand = SetFieldArgument(from, to, isNullConfiguration.LeftOperand);
+                    return isNullConfiguration;
+
+                case MembershipConfiguration membershipConfiguration:
+                    membershipConfiguration.LeftOperand = SetFieldArgument(from, to, membershipConfiguration.LeftOperand);
+                    return membershipConfiguration;
+
+                case NeqConfiguration neqConfiguration:
+                    neqConfiguration.LeftOperand = SetFieldArgument(from, to, neqConfiguration.LeftOperand);
+                    return neqConfiguration;
+
+                case OrConfiguration orConfiguration:
+                    foreach (var andConfigurationOperand in orConfiguration.Operands)
+                    {
+                        FilterConfigurationReplaceName(andConfigurationOperand, from, to);
+                    }
+
+                    return orConfiguration;
+
+                case Models.Filter.Custom.BetweenConfiguration betweenConfigurationCustom:
+                    betweenConfigurationCustom.LeftOperand = SetFieldArgument(from, to, betweenConfigurationCustom.LeftOperand);
+                    return betweenConfigurationCustom;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(configuration));
+            }
+        }
+
+        private static IArgumentConfiguration SetFieldArgument(string from, string to, IArgumentConfiguration fieldArgument)
+        {
+            var fieldArgumentConfig = fieldArgument as FieldArgumentConfiguration;
+            if (fieldArgumentConfig != null)
+            {
+                var field = fieldArgumentConfig.Field as FieldConfiguration;
+                if (field != null && field.SpFieldName.PrepareToCompare() == @from.PrepareToCompare())
+                {
+                    field.SpFieldName = to;
+                }
+
+                fieldArgumentConfig.Field = field;
+            }
+
+            return fieldArgumentConfig;
         }
 
         public static CamlChainRule ResolveSearchFilters(ConditionConfiguration c)

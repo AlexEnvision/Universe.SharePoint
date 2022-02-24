@@ -33,51 +33,138 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.SharePoint;
-using Universe.Sp.Common.Caml;
+using System;
 using Universe.Sp.CQRS.Models.Filter;
 
-namespace Universe.Sp.CQRS.Models
+namespace Universe.Sp.CQRS.Dal.MetaInfo
 {
-    public class QueryBuilder<T> where T: class
+    /// <summary>
+    /// The base field meta info.
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public abstract class BaseFieldMetaInfo
     {
-        public SPQuery SpQuery
+        /// <summary>
+        /// The _can be visible.
+        /// </summary>
+        private bool? _canBeVisible;
+
+        /// <summary>
+        /// The _filter title.
+        /// </summary>
+        private string _filterTitle;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseFieldMetaInfo"/> class.
+        /// </summary>
+        protected BaseFieldMetaInfo()
         {
-            get => SpQueryExt.ItemsQuery(
-                where: CamlWhere ?? string.Empty,
-                order: CamlOrder ?? string.Empty,
-                viewFields: CamlViewFields ?? string.Empty);
+            AlwaysSelect = false;
         }
 
-        public string CamlWhere { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether always select.
+        /// </summary>
+        public bool AlwaysSelect { get; set; }
 
-        public string CamlOrder { get; set; }
-
-        public string CamlViewFields { get; set; }
-
-        public QueryBuilder<T> WhereByFilters(List<CamlChainRule> filters)
+        /// <summary>
+        /// Gets or sets a value indicating whether displayed.
+        /// </summary>
+        public bool CanBeVisible
         {
-            if (filters == null)
-                return this;
+            get => _canBeVisible ?? VisibleDefault;
 
-            var chains = filters.Select(x => x.RuleBody).ToArray();
-
-            CamlWhere = CamlHelper.GetCamlWhere(CamlHelper.CamlChain(
-                CamlHelper.LogicalOperators.OR,
-                chains));
-
-            return this;
+            set => _canBeVisible = value;
         }
 
-        public QueryBuilder<T> OrderBy(List<CamlSortRule> rules)
+        /// <summary>
+        /// Gets the data type.
+        /// </summary>
+        public abstract Type DataType { get; }
+
+        /// <summary>
+        /// Gets the field type.
+        /// </summary>
+        public abstract string FieldType { get; }
+
+        /// <summary>
+        /// Gets the field type.
+        /// </summary>
+        public FieldTypes? FieldTypeEnum { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether filterable.
+        /// </summary>
+        public virtual bool Filterable { get; set; }
+
+        /// <summary>
+        /// Gets or sets the filter title.
+        /// </summary>
+        public string FilterTitle
         {
-            var descriptors = rules.Select(x => x.RuleBody).ToArray();
+            get => _filterTitle ?? Title;
 
-            CamlOrder = CamlHelper.GetCamlOrderBy(descriptors);
+            set => _filterTitle = value;
+        }
 
-            return this;
+        /// <summary>
+        /// Gets or sets a value indicating whether is filterhierarchy.
+        /// </summary>
+        public bool IsFilterHierarchy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether sortable.
+        /// </summary>
+        public virtual bool Sortable { get; set; }
+
+        /// <summary>
+        /// Gets or sets the template.
+        /// </summary>
+        public string Template { get; set; }
+
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether default view.
+        /// </summary>
+        public bool VisibleDefault { get; set; }
+
+        /// <summary>
+        /// The get field type.
+        /// </summary>
+        /// <param name="dataType">
+        /// The data type.
+        /// </param>
+        /// <returns>
+        /// The <see cref="string"/>.
+        /// </returns>
+        public string GetFieldType(Type dataType)
+        {
+            if (DataType == typeof(int) || DataType == typeof(int?)
+                || DataType == typeof(long) || DataType == typeof(long?)
+                || DataType == typeof(short) || DataType == typeof(short?))
+                return FieldTypes.Int.ToString();
+
+            if (DataType == typeof(decimal) || DataType == typeof(decimal?)
+                || DataType == typeof(double) || DataType == typeof(double?)
+                || DataType == typeof(float) || DataType == typeof(float?))
+                return FieldTypes.Number.ToString();
+
+            if (DataType == typeof(DateTimeOffset) || DataType == typeof(DateTimeOffset?))
+                return FieldTypes.DateTimeOffset.ToString();
+
+            if (DataType == typeof(bool) || DataType == typeof(bool?))
+                return FieldTypes.Bool.ToString();
+
+            return FieldTypes.String.ToString();
         }
     }
 }

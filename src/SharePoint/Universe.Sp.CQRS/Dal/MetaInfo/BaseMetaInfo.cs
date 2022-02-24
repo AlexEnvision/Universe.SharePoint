@@ -35,49 +35,48 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.SharePoint;
-using Universe.Sp.Common.Caml;
-using Universe.Sp.CQRS.Models.Filter;
 
-namespace Universe.Sp.CQRS.Models
+namespace Universe.Sp.CQRS.Dal.MetaInfo
 {
-    public class QueryBuilder<T> where T: class
+    /// <summary>
+    /// The base meta info.
+    /// </summary>
+    public class BaseMetaInfo
     {
-        public SPQuery SpQuery
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseMetaInfo"/> class.
+        /// </summary>
+        /// <param name="entityName">
+        /// The entity name.
+        /// </param>
+        protected BaseMetaInfo(string entityName)
         {
-            get => SpQueryExt.ItemsQuery(
-                where: CamlWhere ?? string.Empty,
-                order: CamlOrder ?? string.Empty,
-                viewFields: CamlViewFields ?? string.Empty);
+            EntityName = entityName;
+            FieldsMetaInfo = new List<BaseFieldMetaInfo>();
         }
 
-        public string CamlWhere { get; set; }
+        /// <summary>
+        /// Gets or sets the entity name.
+        /// </summary>
+        public string EntityName { get; protected set; }
 
-        public string CamlOrder { get; set; }
+        /// <summary>
+        /// Gets or sets the fields meta info.
+        /// </summary>
+        public List<BaseFieldMetaInfo> FieldsMetaInfo { get; protected set; }
 
-        public string CamlViewFields { get; set; }
+        /// <summary>
+        /// Gets or sets the grid view columns extent.
+        /// </summary>
+        public List<BaseFieldMetaInfo> GridViewColumnsExtent { get; protected set; }
 
-        public QueryBuilder<T> WhereByFilters(List<CamlChainRule> filters)
+
+        /// <summary>
+        /// The build grid view columns extent.
+        /// </summary>
+        protected void BuildGridViewColumnsExtent()
         {
-            if (filters == null)
-                return this;
-
-            var chains = filters.Select(x => x.RuleBody).ToArray();
-
-            CamlWhere = CamlHelper.GetCamlWhere(CamlHelper.CamlChain(
-                CamlHelper.LogicalOperators.OR,
-                chains));
-
-            return this;
-        }
-
-        public QueryBuilder<T> OrderBy(List<CamlSortRule> rules)
-        {
-            var descriptors = rules.Select(x => x.RuleBody).ToArray();
-
-            CamlOrder = CamlHelper.GetCamlOrderBy(descriptors);
-
-            return this;
+            GridViewColumnsExtent = FieldsMetaInfo.Where(_ => _.Name.StartsWith("Extent.") && _.CanBeVisible).ToList();
         }
     }
 }

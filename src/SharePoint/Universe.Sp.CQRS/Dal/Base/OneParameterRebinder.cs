@@ -33,51 +33,61 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.SharePoint;
-using Universe.Sp.Common.Caml;
-using Universe.Sp.CQRS.Models.Filter;
+using System.Linq.Expressions;
 
-namespace Universe.Sp.CQRS.Models
+namespace Universe.Sp.CQRS.Dal.Base
 {
-    public class QueryBuilder<T> where T: class
+    /// <summary>
+    /// The one parameter rebinder.
+    /// <author>Alex Envision</author>
+    /// </summary>
+    internal class OneParameterRebinder : ExpressionVisitor
     {
-        public SPQuery SpQuery
+        /// <summary>
+        /// The _new parameter.
+        /// </summary>
+        private readonly ParameterExpression _newParameter;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OneParameterRebinder"/> class.
+        /// </summary>
+        /// <param name="newParameter">
+        /// The new parameter.
+        /// </param>
+        private OneParameterRebinder(ParameterExpression newParameter)
         {
-            get => SpQueryExt.ItemsQuery(
-                where: CamlWhere ?? string.Empty,
-                order: CamlOrder ?? string.Empty,
-                viewFields: CamlViewFields ?? string.Empty);
+            _newParameter = newParameter;
         }
 
-        public string CamlWhere { get; set; }
-
-        public string CamlOrder { get; set; }
-
-        public string CamlViewFields { get; set; }
-
-        public QueryBuilder<T> WhereByFilters(List<CamlChainRule> filters)
+        /// <summary>
+        /// The replace parameter.
+        /// </summary>
+        /// <param name="newParameter">
+        /// The new parameter.
+        /// </param>
+        /// <param name="exp">
+        /// The exp.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Expression"/>.
+        /// </returns>
+        public static Expression ReplaceParameter(ParameterExpression newParameter, Expression exp)
         {
-            if (filters == null)
-                return this;
-
-            var chains = filters.Select(x => x.RuleBody).ToArray();
-
-            CamlWhere = CamlHelper.GetCamlWhere(CamlHelper.CamlChain(
-                CamlHelper.LogicalOperators.OR,
-                chains));
-
-            return this;
+            return new OneParameterRebinder(newParameter).Visit(exp);
         }
 
-        public QueryBuilder<T> OrderBy(List<CamlSortRule> rules)
+        /// <summary>
+        /// The visit parameter.
+        /// </summary>
+        /// <param name="p">
+        /// The p.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Expression"/>.
+        /// </returns>
+        protected override Expression VisitParameter(ParameterExpression p)
         {
-            var descriptors = rules.Select(x => x.RuleBody).ToArray();
-
-            CamlOrder = CamlHelper.GetCamlOrderBy(descriptors);
-
-            return this;
+            return base.VisitParameter(_newParameter);
         }
     }
 }
