@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║

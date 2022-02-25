@@ -1,6 +1,6 @@
 //  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -38,14 +38,12 @@ using System.Linq;
 using System.Net;
 using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.WorkflowServices;
-using Universe.Diagnostic;
+using Universe.Diagnostic.Logger;
 using Universe.Sp.Common.CSOM.Models;
 using Universe.Sp.Common.CSOM.Models.Result;
 
 namespace Universe.Sp.Common.CSOM.Workflows
 {
-    using Diagnostic.Logger;
-
     /// <summary>
     ///     Расширения для работы с рабочими процессами на клиентской модели SharePoint.
     ///     Extension workflow on CSOM.
