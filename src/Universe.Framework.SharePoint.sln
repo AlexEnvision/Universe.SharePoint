@@ -22,8 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Universe.Sp.Common.CSOM", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetPackages", "NugetPackages", "{89914AB2-5FCF-4362-90BD-CD04F506B962}"
 	ProjectSection(SolutionItems) = preProject
+		NugetPacks\build-packages.ps1 = NugetPacks\build-packages.ps1
 		NugetPacks\Universe.Sp.Common.CSOM.nuspec = NugetPacks\Universe.Sp.Common.CSOM.nuspec
 		NugetPacks\Universe.Sp.Common.nuspec = NugetPacks\Universe.Sp.Common.nuspec
+		NugetPacks\Universe.Sp.CQRS.nuspec = NugetPacks\Universe.Sp.CQRS.nuspec
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Universe.Sp.CQRS", "SharePoint\Universe.Sp.CQRS\Universe.Sp.CQRS.csproj", "{A720DF53-7B99-41EC-BE44-4521C926C83C}"

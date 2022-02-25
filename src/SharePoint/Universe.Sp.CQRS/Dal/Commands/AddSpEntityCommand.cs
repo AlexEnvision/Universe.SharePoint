@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -37,7 +37,6 @@ using System;
 using Universe.Sp.CQRS.Dal.Commands.Base;
 using Universe.Sp.CQRS.Dal.Commands.CommandResults;
 using Universe.Sp.CQRS.Extensions;
-using Universe.Sp.CQRS.Infrastructure;
 using Universe.Sp.DataAccess.Models;
 
 namespace Universe.Sp.CQRS.Dal.Commands
@@ -56,16 +55,11 @@ namespace Universe.Sp.CQRS.Dal.Commands
             if (entitySp == null)
                 throw new ArgumentNullException(nameof(entitySp));
 
-            var setDb = SpCtx.Set<TEntitySp>();
-            entitySp.ListItem = setDb.AddItem();
-
-            var mapper = new SpMapper();
-            mapper.Map(entitySp, entitySp.ListItem);
-
-            entitySp.ListItem.Update();
+            var setSp = SpCtx.Set<TEntitySp>();
+            setSp.Add(entitySp);
+            setSp.SaveChanges();
             
-            var id = entitySp.ListItem.ID;
-            entitySp.Id = id;
+            var id = entitySp.Id;
             CreatedEntity = entitySp;
 
             return new AddEntityResult
@@ -83,7 +77,7 @@ namespace Universe.Sp.CQRS.Dal.Commands
                 throw new ArgumentNullException(nameof(createdEntitySp));
 
             var setDb = SpCtx.Set<TEntitySp>();
-            createdEntitySp.ListItem.Delete();
+            setDb.Remove(createdEntitySp);
 
             var id = createdEntitySp.Id;
             return new AddEntityResult

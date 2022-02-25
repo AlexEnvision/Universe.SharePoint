@@ -1,4 +1,4 @@
-# инициализация путей
+﻿# инициализация путей
 if($true)
 {
     $scriptpath = $MyInvocation.MyCommand.Path
@@ -27,6 +27,7 @@ cd $nugetPackegesSpec
 
 invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.Common.nuspec"
 invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.Common.CSOM.nuspec"
+invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.CQRS.nuspec"
 
 
 $outputDir = "$nugetPackegesSpec\Pkgs"

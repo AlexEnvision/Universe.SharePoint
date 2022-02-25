@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -38,6 +38,7 @@ using Microsoft.SharePoint;
 using Universe.Sp.CQRS.Dal.MetaInfo;
 using Universe.Sp.CQRS.Dal.Queries.Base;
 using Universe.Sp.CQRS.Extensions;
+using Universe.Sp.CQRS.Infrastructure;
 using Universe.Sp.CQRS.Models;
 using Universe.Sp.CQRS.Models.Filter;
 using Universe.Sp.CQRS.Models.Req;
@@ -55,8 +56,7 @@ namespace Universe.Sp.CQRS.Dal.Queries
     {
         public virtual SpRequestedPage<TEntitySp> Execute(GetSpEntitiesReq req)
         {
-            var listUrl = new TEntitySp().ListUrl;
-            var list = SpCtx.Web.GetList(listUrl);
+            SetSp<TEntitySp> setSp = SpCtx.Set<TEntitySp>();
 
             if (req.SpQuery == null)
             {
@@ -71,11 +71,11 @@ namespace Universe.Sp.CQRS.Dal.Queries
                     ? query
                         .ApplyFiltersAtQuery(req.Filters, mi)
                         .ApplySortingAtQuery(req.Sorting, mi)
-                        .GetAllItemsAsOnePageExtension(list, req.Paging)
+                        .GetAllItemsAsOnePageExtension(setSp, req.Paging)
                     : query
                         .ApplyFiltersAtQuery(req.Filters, mi)
                         .ApplySortingAtQuery(req.Sorting, mi)
-                        .GetCurrentPageExtension(list, req.Paging);
+                        .GetCurrentPageExtension(setSp, req.Paging);
 
                 return availableItems;
             }
@@ -83,7 +83,7 @@ namespace Universe.Sp.CQRS.Dal.Queries
             var spListItems = new MatList<SPListItem>();
             do
             {
-                var collection = list.GetItems(req.SpQuery);
+                var collection = setSp.SpList.GetItems(req.SpQuery);
                 spListItems += collection.Cast<SPListItem>().ToList();
                 req.SpQuery.ListItemCollectionPosition = collection.ListItemCollectionPosition;
             } while (req.SpQuery.ListItemCollectionPosition != null);

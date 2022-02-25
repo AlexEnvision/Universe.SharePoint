@@ -33,22 +33,94 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Universe.Sp.CQRS.Infrastructure;
-using Universe.Sp.DataAccess;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.SharePoint;
 using Universe.Sp.DataAccess.Models;
+using Universe.Types.Collection;
 
-namespace Universe.Sp.CQRS.Extensions
+namespace Universe.Sp.CQRS.Infrastructure
 {
-    public static class SpContextExtensions
+    /// <summary>
+    ///     SetSp представляет собой набор всех сущностей в контексте или которые могут быть запрошены из
+    ///     SharePoint. Объекты SpSet создаются из SpContext с помощью метода SpContext.Set.
+    /// <author>Alex Envision</author>
+    /// </summary>
+    public class SetSp<TEntitySp> where TEntitySp : class, IEntitySp, new()
     {
-        public static SetSp<TEntitySp> Set<TEntitySp>(this IUniverseSpContext ctx) where TEntitySp : class, IEntitySp, new()
-        {
-            var listUrl = new TEntitySp().ListUrl;
-            var list = ctx.Web.GetList(listUrl);
+        public SPList SpList { get; set; }
 
-            return new SetSp<TEntitySp> {
-                SpList = list
-            };
+        private readonly SpMapper _mapper;
+
+        private MatList<TEntitySp> _buffer;
+
+        public SetSp()
+        {
+            _mapper = new SpMapper();
+            _buffer = new MatList<TEntitySp>();
+        }
+
+        public TEntitySp Add(TEntitySp entitySp)
+        {
+            entitySp.ListItem = SpList.AddItem();
+            _mapper.Map(entitySp, entitySp.ListItem);
+            _buffer += entitySp;
+
+            return entitySp;
+        }
+
+        public void Update(params TEntitySp[] entitiesSp)
+        {
+            foreach (var entitySp in entitiesSp)
+            {
+                entitySp.ListItem = SpList.AddItem();
+                _mapper.Map(entitySp, entitySp.ListItem);
+                _buffer += entitySp;
+            }
+        }
+
+        public IEnumerable<TEntitySp> AddRange(IEnumerable<TEntitySp> entitiesSp)
+        {
+            var entitySps = entitiesSp.ToList();
+            foreach (var entitySp in entitySps)
+            {
+                entitySp.ListItem = SpList.AddItem();
+                _mapper.Map(entitySp, entitySp.ListItem);
+                _buffer += entitySp;
+            }
+
+            return entitySps;
+        }
+
+        public TEntitySp Remove(TEntitySp entitySp)
+        {
+            entitySp.ListItem = SpList.AddItem();
+            _buffer -= entitySp;
+            entitySp.ListItem.Delete();
+
+            return entitySp;
+        }
+
+        public IEnumerable<TEntitySp> RemoveRange(IEnumerable<TEntitySp> entitySps)
+        {
+            var removeRange = entitySps.ToList();
+            foreach (var entitySp in removeRange)
+            {
+                entitySp.ListItem = SpList.AddItem();
+                _mapper.Map(entitySp, entitySp.ListItem);
+                _buffer += entitySp;
+            }
+
+            return removeRange;
+        }
+
+        public void SaveChanges()
+        {
+            foreach (var entitySp in _buffer)
+            {
+                entitySp.ListItem.Update();
+                entitySp.Id = entitySp.ListItem.ID;
+            }
         }
     }
 }

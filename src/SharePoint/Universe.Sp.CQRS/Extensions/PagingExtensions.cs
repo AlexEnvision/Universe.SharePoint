@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2021 Universe.SharePoint                                            ║
+//  ║   Copyright 2022 Universe.SharePoint                                            ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -52,10 +52,16 @@ namespace Universe.Sp.CQRS.Extensions
     {
         public static SpRequestedPage<T> GetAllItemsAsOnePageExtension<T>(
             this QueryBuilder<T> query,
-            SPList list,
+            SetSp<T> setSp,
             Paging paging)
             where T : class, IEntitySp, new()
         {
+            if (setSp == null) 
+                throw new ArgumentNullException(nameof(setSp));
+
+            if (paging == null)
+                throw new ArgumentNullException(nameof(paging));
+
             var spquery = query.SpQuery;
 
             if (spquery == null)
@@ -69,7 +75,7 @@ namespace Universe.Sp.CQRS.Extensions
             SPListItemCollection result;
             do
             {
-                result = list.GetItems(spquery);
+                result = setSp.SpList.GetItems(spquery);
                 var castsItems = result.Cast<SPListItem>();
                 items.AddRange(castsItems);
 
@@ -96,15 +102,23 @@ namespace Universe.Sp.CQRS.Extensions
 
         public static SpRequestedPage<T> GetCurrentPageExtension<T>(
             this QueryBuilder<T> query,
-            SPList list,
+            SetSp<T> setSp,
             Paging paging)
             where T : class, IEntitySp, new()
         {
+            if (setSp == null) 
+                throw new ArgumentNullException(nameof(setSp));
+
+            if (paging == null)
+                throw new ArgumentNullException(nameof(paging));
+
             var spquery = query.SpQuery;
 
             if (spquery == null)
                 spquery = new SPQuery();
-            
+
+            var list = setSp.SpList;
+
             spquery.RowLimit = (uint)paging.CountOnPage;
 
             var items = new List<SPListItem>();

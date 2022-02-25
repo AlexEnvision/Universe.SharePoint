@@ -33,21 +33,44 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Universe.Sp.CQRS.Infrastructure;
-using Universe.Sp.DataAccess;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Universe.Sp.CQRS.Dal.Commands.Base;
+using Universe.Sp.CQRS.Dal.Commands.CommandResults;
+using Universe.Sp.CQRS.Extensions;
 using Universe.Sp.DataAccess.Models;
 
-namespace Universe.Sp.CQRS.Extensions
+namespace Universe.Sp.CQRS.Dal.Commands
 {
-    public static class SpContextExtensions
+    /// <summary>
+    ///     Комманда добавления множества сущностей
+    /// <author>Alex Envision</author>
+    /// </summary>
+    /// <typeparam name="TEntitySp"></typeparam>
+    public class AddSpEntitiesCommand<TEntitySp> : BaseCommand
+        where TEntitySp : EntitySp, new()
     {
-        public static SetSp<TEntitySp> Set<TEntitySp>(this IUniverseSpContext ctx) where TEntitySp : class, IEntitySp, new()
+        public virtual AddEntitiesResult Execute(IList<TEntitySp> entitiesSp)
         {
-            var listUrl = new TEntitySp().ListUrl;
-            var list = ctx.Web.GetList(listUrl);
+            if (entitiesSp == null)
+                throw new ArgumentNullException(nameof(entitiesSp));
 
-            return new SetSp<TEntitySp> {
-                SpList = list
+            if (entitiesSp.Count == 0)
+                return new AddEntitiesResult {
+                    Ids = new List<int>(),
+                    IsSuccessful = false
+                };
+
+            var setSp = SpCtx.Set<TEntitySp>();
+            setSp.AddRange(entitiesSp);
+
+            setSp.SaveChanges();
+
+            var ids = entitiesSp.Select(x => x.Id).ToList();
+            return new AddEntitiesResult {
+                Ids = ids,
+                IsSuccessful = true
             };
         }
     }

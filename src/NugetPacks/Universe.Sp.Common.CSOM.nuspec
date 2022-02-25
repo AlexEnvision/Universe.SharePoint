@@ -10,7 +10,7 @@
     <description>Содержит вспомогательный функционал и расширения для SharePoint под CSOM. Входит в состав Universe.Framework</description>
 	  <repository type="git" url="https://gitlab.com/AlexEnvision/Universe.SharePoint" branch="master" />
     <releaseNotes></releaseNotes>
-    <copyright>Copyright © Alex Envision, 2019-2021</copyright>
+    <copyright>Copyright © Alex Envision, 2019-2022</copyright>
     <tags>Universe.Framework SharePoint</tags>
     <dependencies>
       <dependency id="Microsoft.SharePointOnline.CSOM" version="16.1.21812.12000" />
@@ -21,7 +21,6 @@
   </metadata>
   <files>
     <file src="..\License\APACHE-2.0 LICENSE.txt" target="" />
-	  <!--<file src="..\SharePoint\Universe.Sp.Common.CSOM\bin\x64\Release\Universe.Sp.Common.CSOM.dll" target="lib\net45\x64" />-->
     <file src="..\SharePoint\Universe.Sp.Common.CSOM\bin\Release\Universe.Sp.Common.CSOM.dll" target="lib\net45\AnyCPU" />
   </files>
 </package>

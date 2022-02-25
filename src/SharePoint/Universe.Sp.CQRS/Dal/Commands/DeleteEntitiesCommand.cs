@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2022 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2022 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -33,21 +33,38 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Universe.Sp.CQRS.Infrastructure;
-using Universe.Sp.DataAccess;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Universe.Sp.CQRS.Dal.Commands.Base;
+using Universe.Sp.CQRS.Dal.Commands.CommandResults;
+using Universe.Sp.CQRS.Extensions;
 using Universe.Sp.DataAccess.Models;
 
-namespace Universe.Sp.CQRS.Extensions
+namespace Universe.Sp.CQRS.Dal.Commands
 {
-    public static class SpContextExtensions
+    /// <summary>
+    ///     Команда удаления нескольких сущностей.
+    /// <author>Alex Envision</author>
+    /// </summary>
+    /// <typeparam name="TEntitySp"></typeparam>
+    public class DeleteEntitiesCommand<TEntitySp> : BaseCommand
+        where TEntitySp : EntitySp, new()
     {
-        public static SetSp<TEntitySp> Set<TEntitySp>(this IUniverseSpContext ctx) where TEntitySp : class, IEntitySp, new()
+        public virtual DeleteEntitiesResult Execute(List<TEntitySp> entitiesDb)
         {
-            var listUrl = new TEntitySp().ListUrl;
-            var list = ctx.Web.GetList(listUrl);
+            if (entitiesDb == null)
+                throw new ArgumentNullException(nameof(entitiesDb));
 
-            return new SetSp<TEntitySp> {
-                SpList = list
+            var setSp = SpCtx.Set<TEntitySp>();
+            var deletedEntities = setSp.RemoveRange(entitiesDb);
+
+            var ids = deletedEntities.Select(x => x.Id).ToList();
+
+            return new DeleteEntitiesResult
+            {
+                Ids = ids,
+                IsSuccessful = true
             };
         }
     }

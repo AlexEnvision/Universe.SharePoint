@@ -1,6 +1,6 @@
 ﻿//  ╔═════════════════════════════════════════════════════════════════════════════════╗
 //  ║                                                                                 ║
-//  ║   Copyright 2022 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Licensed under the Apache License, Version 2.0 (the "License");               ║
 //  ║   you may not use this file except in compliance with the License.              ║
@@ -15,7 +15,7 @@
 //  ║   limitations under the License.                                                ║
 //  ║                                                                                 ║
 //  ║                                                                                 ║
-//  ║   Copyright 2022 Universe.SharePoint                                            ║
+//  ║   Copyright 2021 Universe.Framework                                             ║
 //  ║                                                                                 ║
 //  ║   Лицензировано согласно Лицензии Apache, Версия 2.0 ("Лицензия");              ║
 //  ║   вы можете использовать этот файл только в соответствии с Лицензией.           ║
@@ -33,21 +33,35 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
-using Universe.Sp.CQRS.Infrastructure;
-using Universe.Sp.DataAccess;
+using System;
+using Universe.Sp.CQRS.Dal.Commands.Base;
+using Universe.Sp.CQRS.Dal.Commands.CommandResults;
+using Universe.Sp.CQRS.Extensions;
 using Universe.Sp.DataAccess.Models;
 
-namespace Universe.Sp.CQRS.Extensions
+namespace Universe.Sp.CQRS.Dal.Commands
 {
-    public static class SpContextExtensions
+    /// <summary>
+    ///     Комманда обновления сущности
+    /// <author>Alex Envision</author>
+    /// </summary>
+    /// <typeparam name="TEntitySp"></typeparam>
+    public class UpdateEntityCommand<TEntitySp> : BaseCommand
+        where TEntitySp : EntitySp, new()
     {
-        public static SetSp<TEntitySp> Set<TEntitySp>(this IUniverseSpContext ctx) where TEntitySp : class, IEntitySp, new()
+        public virtual UpdateEntityResult Execute(TEntitySp entitySp)
         {
-            var listUrl = new TEntitySp().ListUrl;
-            var list = ctx.Web.GetList(listUrl);
+            if (entitySp == null)
+                throw new ArgumentNullException(nameof(entitySp));
 
-            return new SetSp<TEntitySp> {
-                SpList = list
+            var setDb = SpCtx.Set<TEntitySp>();
+            setDb.Update(entitySp);
+            setDb.SaveChanges();
+
+            var id = entitySp.Id;
+            return new UpdateEntityResult {
+                Id = id,
+                IsSuccessful = true
             };
         }
     }

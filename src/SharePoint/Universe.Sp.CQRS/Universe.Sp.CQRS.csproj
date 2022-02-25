@@ -70,6 +70,7 @@
     <Compile Include="Dal\Base\OneParameterRebinder.cs" />
     <Compile Include="Dal\Base\QueryableMetaInfoExtensions.cs" />
     <Compile Include="Dal\CommandQueryBuilder.cs" />
+    <Compile Include="Dal\Commands\AddSpEntitiesCommand.cs" />
     <Compile Include="Dal\Commands\AddSpEntityCommand.cs" />
     <Compile Include="Dal\Commands\Base\BaseCommand.cs" />
     <Compile Include="Dal\Commands\CommandResults\AddEntitiesResult.cs" />
@@ -79,6 +80,10 @@
     <Compile Include="Dal\Commands\CommandResults\DeleteEntityResult.cs" />
     <Compile Include="Dal\Commands\CommandResults\UpdateEntitiesResult.cs" />
     <Compile Include="Dal\Commands\CommandResults\UpdateEntityResult.cs" />
+    <Compile Include="Dal\Commands\DeleteEntitiesCommand.cs" />
+    <Compile Include="Dal\Commands\DeleteEntityCommand.cs" />
+    <Compile Include="Dal\Commands\UpdateEntitiesCommand.cs" />
+    <Compile Include="Dal\Commands\UpdateEntityCommand.cs" />
     <Compile Include="Dal\FilterMetaInfo\FilterMetaInfo.cs" />
     <Compile Include="Dal\FilterMetaInfo\IFilterMetaInfo.cs" />
     <Compile Include="Dal\Mappings\Extensions\MappingExpressionExtensions.cs" />
@@ -110,6 +115,7 @@
     <Compile Include="Infrastructure\ISpWebAppSettings.cs" />
     <Compile Include="Infrastructure\IUniverseSpScope.cs" />
     <Compile Include="Infrastructure\ScopeExtensions.cs" />
+    <Compile Include="Infrastructure\SetSp.cs" />
     <Compile Include="Infrastructure\SpMapper.cs" />
     <Compile Include="Infrastructure\UniverseSpScope.cs" />
     <Compile Include="MapperConfiguration.cs" />
