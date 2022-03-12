@@ -46,5 +46,8 @@ namespace Universe.Sp.DataAccess.Models
 
         [JsonIgnore]
         SPListItem ListItem { get; set; }
+
+        // ReSharper disable once InconsistentNaming
+        int owshiddenversion { get; set; }
     }
 }

@@ -61,7 +61,7 @@ namespace Universe.Sp.CQRS.Infrastructure
 
 
             var q = properties.ToList();
-            q = q.Where(a => a.PropertyType.Name != "SPListItem" && a.Name != "Id" && a.Name != "ListUrl").ToList();
+            q = q.Where(a => a.PropertyType.Name != "SPListItem" && a.Name != "Id" && a.Name != "ListUrl" && a.Name != "owshiddenversion").ToList();
 
             return q.ToList();
         }
@@ -154,6 +154,11 @@ namespace Universe.Sp.CQRS.Infrastructure
                 propertyTypeNameForCompare == typeof(Guid?).Name.PrepareToCompare())
             {
                 return item.GetGuid(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(SPFieldLookupValue).Name.PrepareToCompare())
+            {
+                return item.GetLookupValue(fieldName);
             }
 
             return item.GetValueByInternalName(propertyInfo.Name);

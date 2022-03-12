@@ -46,9 +46,10 @@ namespace Universe.Framework.ConsoleApp.Tests
         static void Main(string[] args)
         {
             var commandQueryTests = new CommandQueryTests();
-            commandQueryTests.CreateEntityQueryTest();
-            commandQueryTests.CreateEntitiesQueryTest();
+            //commandQueryTests.CreateEntityQueryTest();
+            //commandQueryTests.CreateEntitiesQueryTest();
             commandQueryTests.ReadEntitiesQueryTest();
+            //commandQueryTests.ReadUpdateTrainsetItemsQueryTest();
 
             Console.WriteLine(@"Для продолжения нажмите любую клавишу...");
             Console.ReadLine();

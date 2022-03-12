@@ -82,8 +82,8 @@
     <Compile Include="Dal\Commands\CommandResults\UpdateEntityResult.cs" />
     <Compile Include="Dal\Commands\DeleteEntitiesCommand.cs" />
     <Compile Include="Dal\Commands\DeleteEntityCommand.cs" />
-    <Compile Include="Dal\Commands\UpdateEntitiesCommand.cs" />
-    <Compile Include="Dal\Commands\UpdateEntityCommand.cs" />
+    <Compile Include="Dal\Commands\UpdateSpEntitiesCommand.cs" />
+    <Compile Include="Dal\Commands\UpdateSpEntityCommand.cs" />
     <Compile Include="Dal\FilterMetaInfo\FilterMetaInfo.cs" />
     <Compile Include="Dal\FilterMetaInfo\IFilterMetaInfo.cs" />
     <Compile Include="Dal\Mappings\Extensions\MappingExpressionExtensions.cs" />

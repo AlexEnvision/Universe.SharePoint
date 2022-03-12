@@ -51,7 +51,7 @@ namespace Universe.Sp.CQRS.Dal.Commands
     public class AddSpEntitiesCommand<TEntitySp> : BaseCommand
         where TEntitySp : EntitySp, new()
     {
-        public virtual AddEntitiesResult Execute(IList<TEntitySp> entitiesSp)
+        public virtual AddEntitiesResult Execute(IList<TEntitySp> entitiesSp, bool systemUpdate = false, bool supplyReceivers = false)
         {
             if (entitiesSp == null)
                 throw new ArgumentNullException(nameof(entitiesSp));
@@ -65,7 +65,7 @@ namespace Universe.Sp.CQRS.Dal.Commands
             var setSp = SpCtx.Set<TEntitySp>();
             setSp.AddRange(entitiesSp);
 
-            setSp.SaveChanges();
+            setSp.SaveChanges(systemUpdate, supplyReceivers);
 
             var ids = entitiesSp.Select(x => x.Id).ToList();
             return new AddEntitiesResult {

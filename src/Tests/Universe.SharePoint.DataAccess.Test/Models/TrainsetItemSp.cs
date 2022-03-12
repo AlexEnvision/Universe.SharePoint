@@ -33,20 +33,22 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
+using System;
 using Microsoft.SharePoint;
-using Newtonsoft.Json;
+using Universe.Sp.DataAccess.Models;
 
-namespace Universe.Sp.DataAccess.Models
+namespace Universe.SharePoint.DataAccess.Test.Models
 {
-    public class EntitySp : IEntitySp
+    public class TrainsetItemSp : EntitySp
     {
-        public int Id { get; set; }
+        public override string ListUrl => "Lists/TrainsetItems";
 
-        public virtual string ListUrl => "EntitySpUrl";
+        public string Name { get; set; }
 
-        [JsonIgnore]
-        public SPListItem ListItem { get; set; }
+        public string Title { get; set; }
 
-        public int owshiddenversion { get; set; }
+        public SPFieldLookupValue TrainsetClass { get; set; }
+
+        public DateTime Created { get; set; }
     }
 }

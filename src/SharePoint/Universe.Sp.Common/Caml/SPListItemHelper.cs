@@ -201,7 +201,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var d = spListItem[fieldName];
+            var d = spListItem.GetFieldValueByName(fieldName);
             if (d == null)
                 return null;
 
@@ -231,7 +231,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var d = spListItem[fieldName];
+            var d = spListItem.GetFieldValueByName(fieldName);
             if (d == null)
                 return null;
 
@@ -293,7 +293,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var d = spListItem[fieldName];
+            var d = spListItem.GetFieldValueByName(fieldName);
             if (d == null)
                 return null;
 
@@ -350,7 +350,7 @@ namespace Universe.Sp.Common.Caml
         /// The get decimal nullable.
         /// </summary>
         /// <param name="spListItem">
-        /// The sp list item.
+        /// The sp list item.spListItem.GetFieldValue(fieldName)
         /// </param>
         /// <param name="fieldName">
         /// The field name.
@@ -371,8 +371,8 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            if (spListItem[fieldName] != null)
-                return Convert.ToDecimal(spListItem[fieldName]);
+            if (spListItem.GetFieldValueByName(fieldName) != null)
+                return Convert.ToDecimal(spListItem.GetFieldValueByName(fieldName));
 
             return null;
         }
@@ -397,17 +397,17 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            if (spListItem[fieldName] != null)
+            if (spListItem.GetFieldValueByName(fieldName) != null)
             {
-                if (spListItem[fieldName] is SPFieldUserValueCollection)
-                    return (SPFieldUserValueCollection)spListItem[fieldName];
+                if (spListItem.GetFieldValueByName(fieldName) is SPFieldUserValueCollection)
+                    return (SPFieldUserValueCollection)spListItem.GetFieldValueByName(fieldName);
 
-                if (spListItem[fieldName] is string)
-                    return new SPFieldUserValueCollection(spListItem.Web, (string)spListItem[fieldName]);
+                if (spListItem.GetFieldValueByName(fieldName) is string)
+                    return new SPFieldUserValueCollection(spListItem.Web, (string)spListItem.GetFieldValueByName(fieldName));
 
-                if (spListItem[fieldName] is SPFieldUserValue)
+                if (spListItem.GetFieldValueByName(fieldName) is SPFieldUserValue)
                 {
-                    var userValue = (SPFieldUserValue)spListItem[fieldName];
+                    var userValue = (SPFieldUserValue)spListItem.GetFieldValueByName(fieldName);
 
                     var userValueCollection = new SPFieldUserValueCollection {
                         userValue
@@ -441,7 +441,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var v = spListItem[fieldName];
+            var v = spListItem.GetFieldValueByName(fieldName);
             if (v == null)
                 return null;
 
@@ -512,8 +512,8 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            if (spListItem[fieldName] != null)
-                return Convert.ToInt32(spListItem[fieldName]);
+            if (spListItem.GetFieldValueByName(fieldName) != null)
+                return Convert.ToInt32(spListItem.GetFieldValueByName(fieldName));
 
             return null;
         }
@@ -572,8 +572,8 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            if (spListItem[fieldName] != null)
-                return Convert.ToDouble(spListItem[fieldName]);
+            if (spListItem.GetFieldValueByName(fieldName) != null)
+                return Convert.ToDouble(spListItem.GetFieldValueByName(fieldName));
 
             return null;
         }
@@ -650,7 +650,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var v = spListItem[fieldName];
+            var v = spListItem.GetFieldValueByName(fieldName);
             if (v is SPFieldLookupValue)
                 return (SPFieldLookupValue)v;
 
@@ -709,7 +709,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var v = spListItem[fieldName];
+            var v = spListItem.GetFieldValueByName(fieldName);
             var collection = v as SPFieldLookupValueCollection;
             if (collection != null)
                 return collection;
@@ -769,7 +769,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var valueObj = spListItem[fieldName];
+            var valueObj = spListItem.GetFieldValueByName(fieldName);
             if (valueObj != null)
             {
                 if (valueObj is SPFieldMultiChoiceValue)
@@ -808,7 +808,7 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            var s = spListItem[fieldName];
+            var s = spListItem.GetFieldValueByName(fieldName);
             if (s == null)
                 return null;
 
@@ -843,15 +843,15 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            if (spListItem[fieldName] != null)
+            if (spListItem.GetFieldValueByName(fieldName) != null)
             {
-                if (spListItem[fieldName] is SPFieldUserValue)
-                    return (SPFieldUserValue)spListItem[fieldName];
+                if (spListItem.GetFieldValueByName(fieldName) is SPFieldUserValue)
+                    return (SPFieldUserValue)spListItem.GetFieldValueByName(fieldName);
 
-                if (spListItem[fieldName] is string)
+                if (spListItem.GetFieldValueByName(fieldName) is string)
                 {
                     var userField = (SPFieldUser)spListItem.Fields.GetFieldByInternalName(fieldName);
-                    var userFieldValue = (SPFieldUserValue)userField.GetFieldValue(spListItem[fieldName].ToString());
+                    var userFieldValue = (SPFieldUserValue)userField.GetFieldValue(spListItem.GetFieldValueByName(fieldName).ToString());
                     return userFieldValue;
                 }
 
@@ -886,13 +886,13 @@ namespace Universe.Sp.Common.Caml
             if (fieldName.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(fieldName));
 
-            if (spListItem[fieldName] != null)
+            if (spListItem.GetFieldValueByName(fieldName) != null)
             {
-                if (spListItem[fieldName] is SPFieldUserValueCollection)
-                    return (SPFieldUserValueCollection)spListItem[fieldName];
+                if (spListItem.GetFieldValueByName(fieldName) is SPFieldUserValueCollection)
+                    return (SPFieldUserValueCollection)spListItem.GetFieldValueByName(fieldName);
 
-                if (spListItem[fieldName] is string)
-                    return new SPFieldUserValueCollection(spListItem.Web, (string)spListItem[fieldName]);
+                if (spListItem.GetFieldValueByName(fieldName) is string)
+                    return new SPFieldUserValueCollection(spListItem.Web, (string)spListItem.GetFieldValueByName(fieldName));
 
                 throw new NotImplementedException("Поддерживаются только поля-мультилукапы пользователей!");
             }
@@ -928,6 +928,42 @@ namespace Universe.Sp.Common.Caml
             }
 
             return null;
+        }
+
+        /// <summary>
+        ///     Получение значения по названию поля из элемента SP
+        /// </summary>
+        /// <param name="spListItem"></param>
+        /// <param name="internalName"></param>
+        /// <returns></returns>
+        public static object GetFieldValueByName(this SPListItem spListItem, string internalName)
+        {
+            try
+            {
+                return spListItem[internalName];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка получения значения поля {internalName}. " + ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        ///     Получение значения по названию поля из элемента SP
+        /// </summary>
+        /// <param name="spListItem"></param>
+        /// <param name="internalName"></param>
+        /// <returns></returns>
+        public static object GetFieldValueByName(this SPItem spListItem, string internalName)
+        {
+            try
+            {
+                return spListItem[internalName];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Ошибка получения значения поля {internalName}. " + ex.Message, ex);
+            }
         }
     }
 
