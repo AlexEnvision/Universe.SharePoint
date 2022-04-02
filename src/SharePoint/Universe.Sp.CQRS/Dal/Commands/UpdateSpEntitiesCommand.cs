@@ -34,6 +34,8 @@
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Universe.Sp.CQRS.Dal.Commands.Base;
 using Universe.Sp.CQRS.Dal.Commands.CommandResults;
 using Universe.Sp.CQRS.Extensions;
@@ -42,25 +44,33 @@ using Universe.Sp.DataAccess.Models;
 namespace Universe.Sp.CQRS.Dal.Commands
 {
     /// <summary>
-    ///     Комманда обновления сущности
+    ///     Команда обновления множества сущностей
     /// <author>Alex Envision</author>
     /// </summary>
     /// <typeparam name="TEntitySp"></typeparam>
-    public class UpdateEntityCommand<TEntitySp> : BaseCommand
+    public class UpdateSpEntitiesCommand<TEntitySp> : BaseCommand
         where TEntitySp : EntitySp, new()
     {
-        public virtual UpdateEntityResult Execute(TEntitySp entitySp)
+        public virtual UpdateEntitiesResult Execute(IList<TEntitySp> entitiesDbs, bool systemUpdate = false, bool supplyReceivers = false)
         {
-            if (entitySp == null)
-                throw new ArgumentNullException(nameof(entitySp));
+            if (entitiesDbs == null)
+                throw new ArgumentNullException(nameof(entitiesDbs));
+
+            if (entitiesDbs.Count == 0)
+                return new UpdateEntitiesResult {
+                    Ids = new List<int>(),
+                    IsSuccessful = false
+                };
 
             var setDb = SpCtx.Set<TEntitySp>();
-            setDb.Update(entitySp);
-            setDb.SaveChanges();
+            var entitiesSpsArray = entitiesDbs.ToArray();
+            setDb.Update(entitiesSpsArray);
 
-            var id = entitySp.Id;
-            return new UpdateEntityResult {
-                Id = id,
+            setDb.SaveChanges(systemUpdate, supplyReceivers);
+
+            var ids = entitiesSpsArray.Select(x => x.Id).ToList();
+            return new UpdateEntitiesResult {
+                Ids = ids,
                 IsSuccessful = true
             };
         }

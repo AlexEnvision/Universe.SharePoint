@@ -89,15 +89,27 @@ namespace Universe.Sp.CQRS.Extensions
                     var name = item.Name;
 
                     var selector = item.DbFieldSelector;
-                    var expression = (UnaryExpression)selector.Body;
-                    var operand = (MemberExpression)expression.Operand;
-                    var resolveName = operand.Member.Name;
+
+                    string resolveName = "";
+                    if (selector.Body is UnaryExpression)
+                    {
+                        var expression = selector.Body as UnaryExpression;
+                        var operand = expression?.Operand as MemberExpression;
+                        resolveName = operand?.Member.Name ?? string.Empty;
+                    }
+
+                    if (selector.Body is MemberExpression)
+                    {
+                        var operand = selector.Body as MemberExpression;
+                        resolveName = operand?.Member.Name ?? string.Empty;
+                    }
 
                     for (var index = 0; index < conditions.Count; index++)
                     {
                         var conditionConfiguration = conditions[index];
                         conditionConfiguration =
                             FilterConfigurationReplaceName(conditionConfiguration, name, resolveName);
+                        conditions[index] = conditionConfiguration;
                     }
                 }
             }

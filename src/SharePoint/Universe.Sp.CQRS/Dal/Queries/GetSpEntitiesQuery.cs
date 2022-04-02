@@ -58,10 +58,10 @@ namespace Universe.Sp.CQRS.Dal.Queries
         {
             SetSp<TEntitySp> setSp = SpCtx.Set<TEntitySp>();
 
+            var query = new QueryBuilder<TEntitySp>();
+
             if (req.SpQuery == null)
             {
-                var query = new QueryBuilder<TEntitySp>();
-
                 var container = req.FieldMapContainer as FieldMapContainer<TEntitySp>;
 
                 // Построение метаинформации для фильтрации и сортировки
@@ -88,11 +88,12 @@ namespace Universe.Sp.CQRS.Dal.Queries
                 req.SpQuery.ListItemCollectionPosition = collection.ListItemCollectionPosition;
             } while (req.SpQuery.ListItemCollectionPosition != null);
 
-            var items = spListItems.Select(x => new TEntitySp
+            var mapper = new SpMapper();
+            var items = spListItems.Select(x => mapper.ReverseMap(x, new TEntitySp
             {
                 Id = x.ID,
                 ListItem = x
-            }).ToList();
+            })).ToList();
 
             return new SpRequestedPage<TEntitySp>
             {

@@ -35,13 +35,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.SharePoint;
 using Newtonsoft.Json;
 using Universe.Diagnostic;
 using Universe.Framework.ConsoleApp.Tests.CQRS.Base;
 using Universe.Framework.ConsoleApp.Tests.Infrastructure;
 using Universe.SharePoint.DataAccess.Test;
 using Universe.SharePoint.DataAccess.Test.Models;
+using Universe.Sp.Common.Caml;
 using Universe.Sp.CQRS.Dal.Commands;
 using Universe.Sp.CQRS.Dal.Queries;
 using Universe.Sp.CQRS.Infrastructure;
@@ -158,6 +161,119 @@ namespace Universe.Framework.ConsoleApp.Tests.CQRS
                             { "Number", x => x.SetNumber }
                         }
                     },
+                    //Filters = new List<ConditionConfiguration>
+                    //{
+                    //    new OrConfiguration
+                    //    {
+                    //        Operands = new List<ConditionConfiguration>
+                    //        {
+                    //            new ContainsConfiguration
+                    //            {
+                    //                LeftOperand = new FieldArgumentConfiguration
+                    //                {
+                    //                    Field = new FieldConfiguration
+                    //                    {
+                    //                        SpFieldName = "Name",
+                    //                    }
+                    //                },
+                    //                RightOperand = new ValueArgumentConfiguration
+                    //                {
+                    //                    Expression = "9"
+                    //                }
+                    //            },
+                    //            new ContainsConfiguration
+                    //            {
+                    //                LeftOperand = new FieldArgumentConfiguration
+                    //                {
+                    //                    Field = new FieldConfiguration
+                    //                    {
+                    //                        SpFieldName = "Name",
+                    //                    }
+                    //                },
+                    //                RightOperand = new ValueArgumentConfiguration
+                    //                {
+                    //                    Expression = "1"
+                    //                }
+                    //            },
+                    //            new EqConfiguration
+                    //            {
+                    //                LeftOperand = new FieldArgumentConfiguration
+                    //                {
+                    //                    Field = new FieldConfiguration
+                    //                    {
+                    //                        SpFieldName = "Number",
+                    //                    }
+                    //                },
+                    //                RightOperand = new ValueArgumentConfiguration
+                    //                {
+                    //                    Expression = "1"
+                    //                }
+                    //            }
+                    //        }
+                    //    }
+                    //},
+                    //Sorting = new List<SortConfiguration>
+                    //{
+                    //    new SortConfiguration
+                    //    {
+                    //        Field = "Name",
+                    //        Direction = SortDirection.Desc
+                    //    }
+                    //},
+                    //Paging = new Paging
+                    //{
+                    //    CountOnPage = 30,
+                    //    PageIndex = 1
+                    //},
+                    SpQuery = SpQueryExt.ItemsQuery(
+                        where: CamlHelper.GetCamlWhere(
+                            CamlHelper.CamlChain(
+                                CamlHelper.LogicalOperators.OR,
+                                CamlHelper.CamlChain(
+                                    CamlHelper.LogicalOperators.AND,
+                                    CamlHelper.GetEqText(
+                                        "Name",
+                                        "Trainset001")
+                                ))),
+                        viewFields: CamlHelper.BuildFieldsRef(
+                            "ID",
+                            "Title",
+                            "Name"),
+                        rowLimit: 2000
+                    )
+                };
+
+                Console.WriteLine(@"Чтение данных из SP...");
+                var result = scope.GetQuery<GetSpEntitiesQuery<TrainsetSp>>().Execute(
+                    req
+                );
+
+                Console.WriteLine($@"Время выполнения запроса: {runningTimeWatcher.TakeRunningTime():G}");
+
+                var resultSfy = JsonConvert.SerializeObject(result, Formatting.Indented);
+                Console.WriteLine($@"Элемент списка {nameof(TrainsetSp)}: {Environment.NewLine}{resultSfy}");
+            }
+        }
+
+        public void ReadUpdateTrainsetItemsQueryTest()
+        {
+            var container = UnityConfig.Container;
+
+            var settings = new AppTestSettings();
+
+            var scope = new UniverseSpScope<UniverseSpTestContext>(settings, container);
+
+            using (var runningTimeWatcher = new RunningTimeWatcher())
+            {
+                var req = new GetSpEntitiesReq
+                {
+                    FieldMapContainer = new FieldMapContainer<TrainsetItemSp>
+                    {
+                        FieldMap = new Dictionary<string, Expression<Func<TrainsetItemSp, object>>>
+                        {
+                            { "Name", x => x.Name }
+                        }
+                    },
                     Filters = new List<ConditionConfiguration>
                     {
                         new OrConfiguration
@@ -191,20 +307,6 @@ namespace Universe.Framework.ConsoleApp.Tests.CQRS
                                     {
                                         Expression = "1"
                                     }
-                                },
-                                new EqConfiguration
-                                {
-                                    LeftOperand = new FieldArgumentConfiguration
-                                    {
-                                        Field = new FieldConfiguration
-                                        {
-                                            SpFieldName = "Number",
-                                        }
-                                    },
-                                    RightOperand = new ValueArgumentConfiguration
-                                    {
-                                        Expression = "1"
-                                    }
                                 }
                             }
                         }
@@ -222,33 +324,92 @@ namespace Universe.Framework.ConsoleApp.Tests.CQRS
                         CountOnPage = 30,
                         PageIndex = 1
                     }
-                    //SpQuery = SpQueryExt.ItemsQuery(
-                    //    where: CamlHelper.GetCamlWhere(
-                    //        CamlHelper.CamlChain(
-                    //            CamlHelper.LogicalOperators.OR,
-                    //            CamlHelper.CamlChain(
-                    //                CamlHelper.LogicalOperators.AND,
-                    //                CamlHelper.GetEqText(
-                    //                    "Name",
-                    //                    "Trainset001")
-                    //            ))),
-                    //    viewFields: CamlHelper.BuildFieldsRef(
-                    //        "ID",
-                    //        "Title",
-                    //        "Name"),
-                    //    rowLimit: 2000
-                    //)
                 };
 
                 Console.WriteLine(@"Чтение данных из SP...");
-                var result = scope.GetQuery<GetSpEntitiesQuery<TrainsetSp>>().Execute(
+                var result = scope.GetQuery<GetSpEntitiesQuery<TrainsetItemSp>>().Execute(
                     req
                 );
 
                 Console.WriteLine($@"Время выполнения запроса: {runningTimeWatcher.TakeRunningTime():G}");
 
                 var resultSfy = JsonConvert.SerializeObject(result, Formatting.Indented);
-                Console.WriteLine($@"Элемент списка {nameof(TrainsetSp)}: {Environment.NewLine}{resultSfy}");
+                Console.WriteLine($@"Элемент списка {nameof(TrainsetItemSp)}: {Environment.NewLine}{resultSfy}");
+
+                Console.WriteLine(@"Чтение классов из SP...");
+                var cresult = scope.GetQuery<GetSpEntitiesQuery<TrainsetClassSp>>().Execute(
+                    new GetSpEntitiesReq
+                    {
+                        FieldMapContainer = new FieldMapContainer<TrainsetClassSp>
+                        {
+                            FieldMap = new Dictionary<string, Expression<Func<TrainsetClassSp, object>>>
+                            {
+                                {"Name", x => x.Name}
+                            }
+                        },
+                        Filters = new List<ConditionConfiguration>
+                        {
+                            new OrConfiguration
+                            {
+                                Operands = new List<ConditionConfiguration>
+                                {
+                                    new ContainsConfiguration
+                                    {
+                                        LeftOperand = new FieldArgumentConfiguration
+                                        {
+                                            Field = new FieldConfiguration
+                                            {
+                                                SpFieldName = "Name",
+                                            }
+                                        },
+                                        RightOperand = new ValueArgumentConfiguration
+                                        {
+                                            Expression = "1"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        Sorting = new List<SortConfiguration>
+                        {
+                            new SortConfiguration
+                            {
+                                Field = "Name",
+                                Direction = SortDirection.Desc
+                            }
+                        },
+                        Paging = new Paging
+                        {
+                            CountOnPage = 30,
+                            PageIndex = 1
+                        }
+                    }
+                );
+
+                var cresultSfy = JsonConvert.SerializeObject(cresult, Formatting.Indented);
+                Console.WriteLine($@"Элемент списка {nameof(TrainsetClassSp)}: {Environment.NewLine}{cresultSfy}");
+
+                var trainsetClass = cresult.Items.FirstOrDefault();
+                var updatingItem = result.Items.FirstOrDefault();
+
+                if (trainsetClass != null && updatingItem != null)
+                {
+                    updatingItem.TrainsetClass = new SPFieldLookupValue(trainsetClass.Id, trainsetClass.Name);
+                }
+                else
+                {
+                    return;
+                }
+
+                Console.WriteLine(@"Сохранение данных в SP...");
+                var saveResult = scope.GetCommand<UpdateSpEntitiesCommand<TrainsetItemSp>>().Execute(
+                    new List<TrainsetItemSp> { updatingItem }
+                );
+
+                Console.WriteLine($@"Время выполнения запроса: {runningTimeWatcher.TakeRunningTime():G}");
+
+                var saveResultSfy = JsonConvert.SerializeObject(saveResult, Formatting.Indented);
+                Console.WriteLine($@"Элемент списка {nameof(TrainsetItemSp)}: {Environment.NewLine}{saveResultSfy}");
             }
         }
 

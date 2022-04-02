@@ -50,14 +50,14 @@ namespace Universe.Sp.CQRS.Dal.Commands
     {
         protected TEntitySp CreatedEntity { get; set; }
 
-        public virtual AddEntityResult Execute(TEntitySp entitySp)
+        public virtual AddEntityResult Execute(TEntitySp entitySp, bool systemUpdate = false, bool supplyReceivers = false)
         {
             if (entitySp == null)
                 throw new ArgumentNullException(nameof(entitySp));
 
             var setSp = SpCtx.Set<TEntitySp>();
             setSp.Add(entitySp);
-            setSp.SaveChanges();
+            setSp.SaveChanges(systemUpdate, supplyReceivers);
             
             var id = entitySp.Id;
             CreatedEntity = entitySp;

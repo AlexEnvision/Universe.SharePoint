@@ -36,6 +36,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SharePoint;
+using Universe.Sp.Common.EventReceiver;
 using Universe.Sp.DataAccess.Models;
 using Universe.Types.Collection;
 
@@ -73,7 +74,6 @@ namespace Universe.Sp.CQRS.Infrastructure
         {
             foreach (var entitySp in entitiesSp)
             {
-                entitySp.ListItem = SpList.AddItem();
                 _mapper.Map(entitySp, entitySp.ListItem);
                 _buffer += entitySp;
             }
@@ -114,11 +114,38 @@ namespace Universe.Sp.CQRS.Infrastructure
             return removeRange;
         }
 
-        public void SaveChanges()
+        public void SaveChanges(bool systemUpdate = false, bool supplyReceivers = false)
         {
             foreach (var entitySp in _buffer)
             {
-                entitySp.ListItem.Update();
+                if (systemUpdate)
+                {
+                    if (supplyReceivers)
+                    {
+                        using (new SpDisabledEventFiringScope())
+                        {
+                            entitySp.ListItem.SystemUpdate(false);
+                        }
+                    }
+                    else
+                    {
+                        entitySp.ListItem.SystemUpdate(false);
+                    }
+                }
+                else
+                {
+                    if (supplyReceivers)
+                    {
+                        using (new SpDisabledEventFiringScope())
+                        {
+                            entitySp.ListItem.Update();
+                        }
+                    }
+                    else
+                    {
+                        entitySp.ListItem.Update();
+                    }
+                }
                 entitySp.Id = entitySp.ListItem.ID;
             }
         }

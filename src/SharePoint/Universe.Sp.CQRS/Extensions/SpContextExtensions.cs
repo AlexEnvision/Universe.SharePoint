@@ -33,6 +33,7 @@
 //  ║                                                                                 ║
 //  ╚═════════════════════════════════════════════════════════════════════════════════╝
 
+using Universe.Helpers.Extensions;
 using Universe.Sp.CQRS.Infrastructure;
 using Universe.Sp.DataAccess;
 using Universe.Sp.DataAccess.Models;
@@ -44,7 +45,8 @@ namespace Universe.Sp.CQRS.Extensions
         public static SetSp<TEntitySp> Set<TEntitySp>(this IUniverseSpContext ctx) where TEntitySp : class, IEntitySp, new()
         {
             var listUrl = new TEntitySp().ListUrl;
-            var list = ctx.Web.GetList(listUrl);
+            var fullListUrl = StringExtension.CombineUrl(ctx.Web.Url, listUrl);
+            var list = ctx.Web.GetList(fullListUrl);
 
             return new SetSp<TEntitySp> {
                 SpList = list
