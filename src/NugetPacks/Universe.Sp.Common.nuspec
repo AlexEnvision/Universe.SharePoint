@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Universe.Sp.Common</id>
-    <version>0.9.3.3</version>
+    <version>0.9.3.4</version>
     <authors>Alex Envision</authors>
     <owners>Alex Envision</owners>
     <license type="file">APACHE-2.0 LICENSE.txt</license>
