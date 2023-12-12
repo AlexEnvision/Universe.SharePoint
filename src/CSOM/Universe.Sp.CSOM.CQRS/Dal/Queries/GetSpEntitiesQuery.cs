@@ -94,25 +94,14 @@ namespace Universe.Sp.CSOM.CQRS.Dal.Queries
             } while (req.SpQuery.ListItemCollectionPosition != null || 
                      (spListItems.Count < req.Paging.CountOnPage && !req.IsAllWithPaging));
 
+            var fmc = req.FieldMapContainer as FieldMapContainer<TEntitySp>;
+
             var mapper = new SpMapper();
-            var items = spListItems.Select(x => mapper.SafeReverseMap(x, new TEntitySp
+            var items = spListItems.Select(x => mapper.SafeReverseMap(fmc, x, new TEntitySp
             {
                 Id = x.Id,
                 ListItem = x
             })).ToList();
-
-            var fmc = req.FieldMapContainer as FieldMapContainer<TEntitySp>;
-            if (fmc != null)
-            {
-                foreach (var fmo in fmc.FieldMap)
-                {
-                    var kvp = fmo.Key;
-                    var exp = fmo.Value;
-
-                    var spName = exp.Name;
-                    var entityField = exp.Body;
-                }
-            }
 
             return new SpRequestedPage<TEntitySp>
             {

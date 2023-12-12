@@ -125,7 +125,20 @@ namespace Universe.Sp.CSOM.CQRS.Infrastructure
                 }
                 else
                 {
-                    
+                    if (metaContainer != null)
+                    {
+                        if (metaContainer.FieldMap.TryGetValue(propertyInfo.Name, out var fieldMapExpression))
+                        {
+                            var exp = fieldMapExpression;
+                            var fieldName = exp.Compile().Invoke(entitySp).ToString();
+
+                            resolvedValue = SafeResolveColumnValue(fieldName, propertyInfo.PropertyType, item);
+                            if (resolvedValue != null)
+                            {
+                                propertyInfo.SetValue(entitySp, resolvedValue);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -216,6 +229,91 @@ namespace Universe.Sp.CSOM.CQRS.Infrastructure
             }
 
             return item.GetValueByInternalName(propertyInfo.Name);
+        }
+
+        private object SafeResolveColumnValue(string fieldName, Type fieldType, ListItem item)
+        {
+            try
+            {
+                return ResolveColumnValue(fieldName, fieldType, item);
+            }
+            catch (Exception ex)
+            {
+                //ignored
+            }
+
+            return null;
+        }
+
+        private object ResolveColumnValue(string fieldName, Type fieldType, ListItem item)
+        {
+            var propertyTypeName = fieldType.Name;
+            var propertyTypeNameForCompare = propertyTypeName.PrepareToCompare();
+
+            if (propertyTypeNameForCompare == typeof(bool).Name.PrepareToCompare())
+            {
+                return item.GetBool(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(int).Name.PrepareToCompare() ||
+                propertyTypeNameForCompare == typeof(long).Name.PrepareToCompare())
+            {
+                return item.GetInt32(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(int?).Name.PrepareToCompare() ||
+                propertyTypeNameForCompare == typeof(long?).Name.PrepareToCompare())
+            {
+                return item.GetInt32Nullable(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(double).Name.PrepareToCompare())
+            {
+                return item.GetDouble(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(double?).Name.PrepareToCompare())
+            {
+                return item.GetDoubleNullable(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(decimal).Name.PrepareToCompare())
+            {
+                return item.GetDecimal(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(decimal?).Name.PrepareToCompare())
+            {
+                return item.GetDecimalNullable(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(string).Name.PrepareToCompare())
+            {
+                return item.GetString(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(DateTime).Name.PrepareToCompare())
+            {
+                return item.GetDateTime(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(DateTime?).Name.PrepareToCompare())
+            {
+                return item.GetDateTimeNullable(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(Guid).Name.PrepareToCompare() ||
+                propertyTypeNameForCompare == typeof(Guid?).Name.PrepareToCompare())
+            {
+                return item.GetGuid(fieldName);
+            }
+
+            if (propertyTypeNameForCompare == typeof(FieldLookupValue).Name.PrepareToCompare())
+            {
+                return item.GetLookupValue(fieldName);
+            }
+
+            return item.GetValueByInternalName(fieldName);
         }
     }
 }
