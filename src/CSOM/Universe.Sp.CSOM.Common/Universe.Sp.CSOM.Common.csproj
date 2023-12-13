@@ -7,8 +7,8 @@
     <ProjectGuid>{04461815-1999-4128-A7F4-41BE59AF5AA1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Universe.Sp.Common.CSOM</RootNamespace>
-    <AssemblyName>Universe.Sp.Common.CSOM</AssemblyName>
+    <RootNamespace>Universe.Sp.CSOM.Common</RootNamespace>
+    <AssemblyName>Universe.Sp.CSOM.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -35,6 +35,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Universe.Sp.Common.CSOM.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Client.Policy, Version=16.1.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">

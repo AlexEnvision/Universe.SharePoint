@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Universe.Sp.CQRS</id>
+    <id>Universe.Sp.CSOM.CQRS</id>
     <version>1.0.0.0</version>
     <authors>Alex Envision</authors>
     <owners>Alex Envision</owners>
     <license type="file">APACHE-2.0 LICENSE.txt</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Содержит базовую реализацию CQRS под SSOM SharePoint (The Command and Query Responsibility Segregation). Входит в состав Universe.Framework</description>
+    <description>Содержит базовую реализацию CQRS под CSOM SharePoint (The Command and Query Responsibility Segregation). Входит в состав Universe.Framework</description>
     <repository type="git" url="https://gitlab.com/AlexEnvision/Universe.SharePoint" branch="master" />
     <releaseNotes></releaseNotes>
     <copyright>Copyright © Alex Envision, 2019-2024</copyright>
     <tags>Universe.Framework</tags>
     <dependencies>
+      <dependency id="Microsoft.SharePointOnline.CSOM" version="16.1.21812.12000" />
       <dependency id="Universe.Sp.Common" version="1.0.0.0" />
       <dependency id="Universe.Helpers" version="1.0.0.0" /> 
 	    <dependency id="Universe.Types" version="1.0.0.0" /> 
 	    <dependency id="AutoMapper" version="6.2.2" />
-	    <dependency id="SharePoint" version="15.0.0" />
-	    <dependency id="Newtonsoft.Json" version="11.0.1" />
+      <dependency id="Newtonsoft.Json" version="11.0.1" />
 	    <dependency id="System.Runtime.CompilerServices.Unsafe" version="4.5.3" />
 	    <dependency id="System.Threading.Tasks.Extensions" version="4.5.4"  />
 	    <dependency id="System.ValueTuple" version="4.3.0"  />
@@ -27,7 +27,7 @@
   </metadata>
   <files>
     <file src="..\License\APACHE-2.0 LICENSE.txt" target="" />
-    <file src="..\SharePoint\Universe.Sp.CQRS\bin\Release\Universe.Sp.CQRS.dll" target="lib\net45\AnyCPU" />
-    <file src="..\SharePoint\Universe.Sp.DataAccess\bin\Release\Universe.Sp.DataAccess.dll" target="lib\net45\AnyCPU" />
+    <file src="..\CSOM\Universe.Sp.CSOM.CQRS\bin\Release\Universe.Sp.CSOM.CQRS.dll" target="lib\net45\AnyCPU" />
+    <file src="..\CSOM\Universe.Sp.CSOM.DataAccess\bin\Release\Universe.Sp.CSOM.DataAccess.dll" target="lib\net45\AnyCPU" />
   </files>
 </package>

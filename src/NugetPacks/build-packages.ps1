@@ -26,8 +26,10 @@ $nugetPackegesSpec = $folderPath
 cd $nugetPackegesSpec 
 
 invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.Common.nuspec"
-invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.Common.CSOM.nuspec"
 invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.CQRS.nuspec"
+
+invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.CSOM.Common.nuspec"
+invoke-expression -Command "$nugetPackegesSpec\nuget.exe pack Universe.Sp.CSOM.CQRS.nuspec"
 
 
 $outputDir = "$nugetPackegesSpec\Pkgs"

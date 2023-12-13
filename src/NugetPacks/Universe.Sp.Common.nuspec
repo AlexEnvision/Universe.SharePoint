@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Universe.Sp.Common</id>
-    <version>0.9.3.4</version>
+    <version>1.0.0.0</version>
     <authors>Alex Envision</authors>
     <owners>Alex Envision</owners>
     <license type="file">APACHE-2.0 LICENSE.txt</license>
@@ -10,14 +10,14 @@
     <description>Содержит вспомогательный функционал и расширения для SharePoint под SSOM.  Входит в состав Universe.Framework</description>
 	  <repository type="git" url="https://gitlab.com/AlexEnvision/Universe.SharePoint" branch="master" />
     <releaseNotes></releaseNotes>
-    <copyright>Copyright © Alex Envision, 2019-2022</copyright>
+    <copyright>Copyright © Alex Envision, 2019-2024</copyright>
     <tags>Universe.Framework SharePoint</tags>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="11.0.1" />
       <dependency id="SharePoint" version="15.0.0" />
-      <dependency id="Universe.Diagnostic" version="0.9.3.4" />
-      <dependency id="Universe.Helpers" version="0.9.3.4" />
-      <dependency id="Universe.Types" version="0.9.3.4" />
+      <dependency id="Universe.Diagnostic" version="1.0.0.0" />
+      <dependency id="Universe.Helpers" version="1.0.0.0" />
+      <dependency id="Universe.Types" version="1.0.0.0" />
     </dependencies>
   </metadata>
   <files>
